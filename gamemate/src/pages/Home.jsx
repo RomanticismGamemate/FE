@@ -9,6 +9,7 @@ const Home = () => {
   const goList = () => navigate(`/chat`);
   const goMyroom = () => navigate(`/my`);
   const goProf = () => navigate(`/profile`);
+  const [selected, setSelected] = useState("전체");
 
   return (
     <H.Container>
@@ -27,11 +28,23 @@ const Home = () => {
       </H.Header>
       <H.Category>
         <H.CList>
-          <H.LBtn>전체</H.LBtn>
+          <H.LBtn
+            $selected={selected === "전체"}
+            onClick={() => setSelected("전체")}
+          >
+            전체
+          </H.LBtn>
+
+          <H.LBtn
+            $selected={selected === "발로란트"}
+            onClick={() => setSelected("발로란트")}
+          >
+            발로란트
+          </H.LBtn>
           <H.Plus>
             <img
               id="add"
-              src={`${process.env.PUBLIC_URL}/images/add.svg   `}
+              src={`${process.env.PUBLIC_URL}/images/add.svg`}
               alt="add"
             />
           </H.Plus>

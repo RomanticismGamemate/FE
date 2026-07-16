@@ -9,6 +9,7 @@ const Prof = () => {
   const goList = () => navigate(`/chat`);
   const goMyroom = () => navigate(`/my`);
   const goProf = () => navigate(`/profile`);
+  const [selected, setSelected] = useState("참여중");
 
   return (
     <P.Container>
@@ -25,7 +26,7 @@ const Prof = () => {
         </P.Profile>
         <P.Chat>
           <P.Alarm>2</P.Alarm>
-          <P.NBtn>
+          <P.NBtn onClick={goList}>
             <img
               id="chat"
               src={`${process.env.PUBLIC_URL}/images/chat_e.svg   `}
@@ -36,8 +37,19 @@ const Prof = () => {
       </P.Header>
       <P.Category>
         <P.CList>
-          <P.LBtn>참여중 2</P.LBtn>
-          <P.LBtn>종료됨 3</P.LBtn>
+          <P.LBtn
+            $selected={selected === "참여중"}
+            onClick={() => setSelected("참여중")}
+          >
+            참여중 2
+          </P.LBtn>
+
+          <P.LBtn
+            $selected={selected === "종료됨"}
+            onClick={() => setSelected("종료됨")}
+          >
+            종료됨 3
+          </P.LBtn>
         </P.CList>
       </P.Category>
       <P.Body></P.Body>

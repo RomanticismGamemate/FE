@@ -118,15 +118,17 @@ export const CList = styled.div`
   align-items: center;
 `;
 
-export const LBtn = styled.div`
+export const LBtn = styled.button`
   display: flex;
-  width: 80px;
   height: 28px;
   padding: 10px;
   justify-content: center;
   align-items: center;
+
+  border: none;
   border-radius: 10px;
-  background: #ffe49a;
+  background: ${({ $selected }) => ($selected ? "#ffe49a" : "#fff")};
+
   color: #000;
   font-family: Pretendard;
   font-size: 15px;
@@ -134,6 +136,9 @@ export const LBtn = styled.div`
   font-weight: 500;
   line-height: normal;
   letter-spacing: -0.3px;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 `;
 
 export const Body = styled.div`
