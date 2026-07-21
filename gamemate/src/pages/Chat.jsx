@@ -144,24 +144,34 @@ const Chat = () => {
     };
   }, []);
 
+  const totalUnreadCount = rooms.reduce(
+    (total, room) => total + (room.unread_count ?? 0),
+    0,
+  );
+
   return (
     <C.Container>
       <C.Header>
         <C.Title>
           <img
             id="back"
-            src={`${process.env.PUBLIC_URL}/images/back.svg   `}
+            src={`${process.env.PUBLIC_URL}/images/back.svg`}
             alt="back"
             onClick={goBack}
           />
           <div>채팅</div>
         </C.Title>
         <C.Chat>
-          <C.Alarm>2</C.Alarm>
+          {totalUnreadCount > 0 && (
+            <C.Alarm id="count">
+              {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+            </C.Alarm>
+          )}
+
           <C.NBtn>
             <img
               id="chat"
-              src={`${process.env.PUBLIC_URL}/images/chat_e.svg   `}
+              src={`${process.env.PUBLIC_URL}/images/chat_e.svg`}
               alt="chat"
             />
           </C.NBtn>

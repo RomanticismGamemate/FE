@@ -5,6 +5,7 @@ import { getGames } from "../api/GameApi";
 import { getRooms } from "../api/HomeApi";
 import { applyToRoom } from "../api/ApplyApi";
 import * as H from "../styles/StyledHome";
+import { getMyRooms } from "../api/ChatRoomApi";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Home = () => {
   const [selected, setSelected] = useState("all");
   const [games, setGames] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [myChatRooms, setMyChatRooms] = useState([]);
   const [message, setMessage] = useState("");
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
   const [hasCategoryOverflow, setHasCategoryOverflow] = useState(false);
@@ -104,12 +106,39 @@ const Home = () => {
     return () => window.removeEventListener("resize", checkOverflow);
   }, [games]);
 
+  useEffect(() => {
+    const loadMyChatRooms = async () => {
+      try {
+        const chatRoomList = await getMyRooms();
+
+        console.log("내 채팅방 목록:", chatRoomList);
+
+        setMyChatRooms(Array.isArray(chatRoomList) ? chatRoomList : []);
+      } catch (error) {
+        console.error("내 채팅방 목록 조회 실패:", error);
+        setMyChatRooms([]);
+      }
+    };
+
+    loadMyChatRooms();
+  }, []);
+
+  const totalUnreadCount = myChatRooms.reduce(
+    (total, room) => total + Number(room.unread_count ?? 0),
+    0,
+  );
+
   return (
     <H.Container>
       <H.Header>
         <H.Title>Game Mate 구하기</H.Title>
         <H.Chat>
-          <H.Alarm>2</H.Alarm>
+          {totalUnreadCount > 0 && (
+            <H.Alarm id="count">
+              {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+            </H.Alarm>
+          )}
+
           <H.NBtn onClick={goList}>
             <img
               id="chat"
