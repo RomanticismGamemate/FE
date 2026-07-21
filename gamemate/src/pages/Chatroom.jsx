@@ -57,13 +57,13 @@ const Chatroom = () => {
           (item) => String(item.id) === String(roomId),
         );
 
-        console.log("roomId:", roomId);
-        console.log("myRooms:", myRooms);
-        console.log("currentRoom:", currentRoom);
-        console.log(
-          "approved_member_count:",
-          currentRoom?.approved_member_count,
-        );
+        // console.log("roomId:", roomId);
+        // console.log("myRooms:", myRooms);
+        // console.log("currentRoom:", currentRoom);
+        // console.log(
+        //   "approved_member_count:",
+        //   currentRoom?.approved_member_count,
+        // );
 
         if (!currentRoom) {
           throw new Error("참여 중인 채팅방 정보를 찾을 수 없습니다.");
