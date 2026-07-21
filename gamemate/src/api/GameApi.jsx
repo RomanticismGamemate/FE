@@ -1,8 +1,11 @@
-const GAMES_URL = "/api/games/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+const GAMES_URL = `${API_BASE_URL}/api/games/`;
 
 const parseErrorMessage = async (response) => {
   try {
     const errorData = await response.json();
+
     return (
       errorData?.message ||
       errorData?.detail ||
@@ -19,7 +22,9 @@ const parseErrorMessage = async (response) => {
  * GET https://api.gamemate.kr/api/games/
  */
 export const getGames = async () => {
-  const response = await fetch(GAMES_URL);
+  const response = await fetch(GAMES_URL, {
+    credentials: "include",
+  });
 
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response));

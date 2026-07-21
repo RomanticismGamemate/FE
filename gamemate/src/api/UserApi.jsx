@@ -1,4 +1,10 @@
-const AUTH_URL = "/api/auth/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const AUTH_URL = `${API_BASE_URL}/api/auth/`;
 
 const parseErrorMessage = async (
   response,
@@ -36,6 +42,10 @@ export const getMyInfo = async () => {
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
+    if (response.status === 404) {
+      throw new Error("사용자 정보를 찾을 수 없습니다.");
     }
 
     throw new Error(

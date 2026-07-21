@@ -1,4 +1,10 @@
-const ROOMS_URL = "/api/rooms/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const ROOMS_URL = `${API_BASE_URL}/api/rooms/`;
 
 const parseErrorMessage = async (
   response,
@@ -20,7 +26,7 @@ const parseErrorMessage = async (
 
 /**
  * 내가 참여 중인 방 목록 조회
- * GET /api/rooms/mine/
+ * GET https://api.gamemate.kr/api/rooms/mine/
  */
 export const getMyRooms = async () => {
   const accessToken = localStorage.getItem("accessToken");
@@ -38,6 +44,10 @@ export const getMyRooms = async () => {
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
     throw new Error(
       await parseErrorMessage(
         response,
@@ -53,7 +63,7 @@ export const getMyRooms = async () => {
 
 /**
  * 특정 방 메시지 목록 조회
- * GET /api/rooms/{room_id}/messages/
+ * GET https://api.gamemate.kr/api/rooms/{room_id}/messages/
  */
 export const getRoomMessages = async ({ roomId, afterId } = {}) => {
   if (roomId === undefined || roomId === null || roomId === "") {
@@ -87,8 +97,16 @@ export const getRoomMessages = async ({ roomId, afterId } = {}) => {
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
     if (response.status === 403) {
       throw new Error("승인된 방 멤버만 메시지를 조회할 수 있습니다.");
+    }
+
+    if (response.status === 404) {
+      throw new Error("존재하지 않는 채팅방입니다.");
     }
 
     throw new Error(

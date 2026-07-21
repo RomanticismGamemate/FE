@@ -1,4 +1,10 @@
-const ROOMS_URL = "/api/rooms/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const ROOMS_URL = `${API_BASE_URL}/api/rooms/`;
 
 const getAccessToken = () => {
   const accessToken = localStorage.getItem("accessToken");
@@ -32,7 +38,7 @@ const parseErrorMessage = async (
 /**
  * 방 가입 신청
  *
- * POST /api/rooms/{id}/apply/
+ * POST https://api.gamemate.kr/api/rooms/{id}/apply/
  *
  * @param {Object} params
  * @param {number|string} params.roomId

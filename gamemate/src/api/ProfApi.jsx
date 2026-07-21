@@ -1,4 +1,10 @@
-const MY_ROOMS_URL = "/api/rooms/mine/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const MY_ROOMS_URL = `${API_BASE_URL}/api/rooms/mine/`;
 
 const parseErrorMessage = async (response) => {
   try {
@@ -21,15 +27,23 @@ const parseErrorMessage = async (response) => {
 export const getMyRooms = async () => {
   const accessToken = localStorage.getItem("accessToken");
 
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
   const response = await fetch(MY_ROOMS_URL, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
     throw new Error(await parseErrorMessage(response));
   }
 
