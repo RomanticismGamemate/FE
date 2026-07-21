@@ -1,8 +1,15 @@
-const ROOMS_URL = "/api/rooms/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const ROOMS_URL = `${API_BASE_URL}/api/rooms/`;
 
 const parseErrorMessage = async (response) => {
   try {
     const errorData = await response.json();
+
     return (
       errorData?.message ||
       errorData?.detail ||
@@ -55,11 +62,16 @@ export const createRoom = async ({
 
   const accessToken = localStorage.getItem("accessToken");
 
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
   const response = await fetch(ROOMS_URL, {
     method: "POST",
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       title: trimmedTitle,
@@ -71,6 +83,18 @@ export const createRoom = async ({
   });
 
   if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error(await parseErrorMessage(response));
+    }
+
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
+    if (response.status === 403) {
+      throw new Error("방을 생성할 권한이 없습니다.");
+    }
+
     throw new Error(await parseErrorMessage(response));
   }
 

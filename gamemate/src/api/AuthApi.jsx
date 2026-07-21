@@ -1,4 +1,10 @@
-const AUTH_MVP_URL = "/api/auth/mvp/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const AUTH_MVP_URL = `${API_BASE_URL}/api/auth/mvp/`;
 
 const parseErrorMessage = async (response) => {
   try {
@@ -47,6 +53,7 @@ export const mvpLogin = async (nickname, password) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
     body: JSON.stringify({
       nickname: trimmedNickname,

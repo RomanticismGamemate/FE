@@ -1,4 +1,10 @@
-const ROOMS_URL = "/api/rooms/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const ROOMS_URL = `${API_BASE_URL}/api/rooms/`;
 
 const parseErrorMessage = async (response) => {
   try {
@@ -35,7 +41,7 @@ export const getRooms = async ({ game } = {}) => {
   const response = await fetch(requestUrl, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      Accept: "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });

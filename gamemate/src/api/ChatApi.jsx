@@ -1,4 +1,10 @@
-const ROOMS_URL = "/api/rooms/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("REACT_APP_API_BASE_URL 환경변수가 설정되지 않았습니다.");
+}
+
+const ROOMS_URL = `${API_BASE_URL}/api/rooms/`;
 
 const parseErrorMessage = async (
   response,
@@ -87,19 +93,6 @@ export const postRoomMessage = async ({ roomId, content } = {}) => {
   return response.json();
 };
 
-/**
- * 특정 채팅방 메시지 조회
- *
- * 최초 조회:
- * GET /api/rooms/{roomId}/messages/
- *
- * 새 메시지만 조회:
- * GET /api/rooms/{roomId}/messages/?after_id={messageId}
- *
- * @param {Object} params
- * @param {number|string} params.roomId
- * @param {number|string|null} [params.afterId]
- */
 export const getRoomMessages = async ({ roomId, afterId } = {}) => {
   if (roomId === undefined || roomId === null || roomId === "") {
     throw new Error("roomId는 필수입니다.");
@@ -152,12 +145,6 @@ export const getRoomMessages = async ({ roomId, afterId } = {}) => {
   return Array.isArray(data) ? data : [];
 };
 
-/**
- * 채팅방 WebSocket 주소 생성
- *
- * 개발 환경이나 백엔드 주소에 맞게
- * REACT_APP_WS_BASE_URL을 설정할 수 있습니다.
- */
 const createChatSocketUrl = (roomId) => {
   if (!roomId) {
     throw new Error("roomId는 필수입니다.");
@@ -181,18 +168,6 @@ const createChatSocketUrl = (roomId) => {
   );
 };
 
-/**
- * 채팅방 WebSocket 연결
- *
- * @param {Object} params
- * @param {number|string} params.roomId
- * @param {(data: Object) => void} params.onMessage
- * @param {() => void} [params.onOpen]
- * @param {(event: CloseEvent) => void} [params.onClose]
- * @param {(event: Event) => void} [params.onError]
- *
- * @returns {WebSocket}
- */
 export const connectChatSocket = ({
   roomId,
   onMessage,
@@ -231,13 +206,6 @@ export const connectChatSocket = ({
   return socket;
 };
 
-/**
- * WebSocket을 통해 채팅 메시지 전송
- *
- * 주의:
- * 백엔드가 요구하는 전송 필드가 content가 아니라
- * message 또는 text일 수도 있으므로 Swagger/백엔드 명세 확인 필요
- */
 export const sendChatMessage = ({ socket, content }) => {
   const trimmedContent = content?.trim();
 
@@ -260,9 +228,6 @@ export const sendChatMessage = ({ socket, content }) => {
   );
 };
 
-/**
- * WebSocket 연결 종료
- */
 export const disconnectChatSocket = (socket) => {
   if (!socket) {
     return;
