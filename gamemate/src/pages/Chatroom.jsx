@@ -232,12 +232,22 @@ const Chatroom = () => {
                     </C.Alert>
                   );
                 }
-                const previousMessage = messages[index - 1];
+                let previousUserMessage = null;
+
+                for (let i = index - 1; i >= 0; i -= 1) {
+                  if (messages[i].message_type !== "system") {
+                    previousUserMessage = messages[i];
+                    break;
+                  }
+                }
+
+                const previousSenderId = previousUserMessage?.sender?.id;
+                const currentSenderId = item.sender?.id;
 
                 const isSameSender =
-                  previousMessage &&
-                  String(previousMessage.sender?.id) ===
-                    String(item.sender?.id);
+                  previousSenderId != null &&
+                  currentSenderId != null &&
+                  String(previousSenderId) === String(currentSenderId);
 
                 const isMyMessage =
                   currentUser &&
