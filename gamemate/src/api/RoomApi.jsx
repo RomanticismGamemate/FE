@@ -87,3 +87,79 @@ export const getRoomMembers = async (roomId) => {
 
   return response.json();
 };
+
+export const leaveRoom = async (roomId) => {
+  if (!roomId) {
+    throw new Error("방 정보를 찾을 수 없습니다.");
+  }
+
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  const response = await fetch(`${ROOMS_URL}${roomId}/leave/`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
+    }
+
+    if (response.status === 403) {
+      throw new Error("이 방에서 나갈 권한이 없습니다.");
+    }
+
+    if (response.status === 404) {
+      throw new Error("존재하지 않는 방입니다.");
+    }
+
+    throw new Error(await parseErrorMessage(response));
+  }
+
+  return response.status === 204 ? null : response.json();
+};
+
+export const deleteRoom = async (roomId) => {
+  if (!roomId) {
+    throw new Error("방 정보를 찾을 수 없습니다.");
+  }
+
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  const response = await fetch(`${ROOMS_URL}${roomId}/`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
+    }
+
+    if (response.status === 403) {
+      throw new Error("방을 삭제할 권한이 없습니다.");
+    }
+
+    if (response.status === 404) {
+      throw new Error("존재하지 않는 방입니다.");
+    }
+
+    throw new Error(await parseErrorMessage(response));
+  }
+
+  return response.status === 204 ? null : response.json();
+};

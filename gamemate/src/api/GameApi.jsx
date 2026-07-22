@@ -23,7 +23,10 @@ const parseErrorMessage = async (response) => {
  */
 export const getGames = async () => {
   const response = await fetch(GAMES_URL, {
-    credentials: "include",
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
   });
 
   if (!response.ok) {

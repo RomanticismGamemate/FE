@@ -234,6 +234,24 @@ export const MemberList = styled.div`
   align-items: start;
 `;
 
+export const MemberNotice = styled.div`
+  min-height: 86px;
+  margin-top: 20px;
+  border-radius: 10px;
+  background: #fff7df;
+  color: #697077;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  word-break: keep-all;
+`;
+
 export const MemberItem = styled.div`
   width: 48px;
   flex: 0 0 48px;

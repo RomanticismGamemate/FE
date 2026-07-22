@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { applyToRoom } from "../api/ApplyApi";
 import { mvpLogin } from "../api/AuthApi";
 import * as S from "../styles/StyledSignup";
 
 const SignupLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -17,6 +19,20 @@ const SignupLogin = () => {
 
     try {
       const authData = await mvpLogin(nickname, password);
+      const applyRoomId = location.state?.applyRoomId;
+
+      if (applyRoomId) {
+        await applyToRoom({ roomId: applyRoomId });
+        navigate(location.state?.redirectTo || `/roomdetail/${applyRoomId}`, {
+          replace: true,
+          state: {
+            applied: true,
+            roomId: applyRoomId,
+          },
+        });
+        return;
+      }
+
       setMessage(authData.message || "로그인되었습니다.");
       navigate("/home");
     } catch (error) {

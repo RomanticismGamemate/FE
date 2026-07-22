@@ -263,6 +263,7 @@ export const ButtonLeft = styled.div`
   background: #fff0c7;
   border: 1px solid #FFE49A;
   color: #000;
+  cursor: pointer;
 `;
 export const ButtonRight = styled.div`
   display: flex;
@@ -305,4 +306,96 @@ export const Message = styled.p`
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: -0.28px;
+`;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+`;
+
+export const Modal = styled.div`
+  width: calc(100% - 56px);
+  max-width: 335px;
+  min-height: 300px;
+  padding: 44px 30px 30px;
+  border-radius: 34px;
+  background: #fffcf4;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Pretendard;
+`;
+
+export const ModalIcon = styled.div`
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid ${({ $danger }) => ($danger ? "#ff3b30" : "#ffe49a")};
+  color: ${({ $danger }) => ($danger ? "#ff3b30" : "#000")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  box-sizing: border-box;
+`;
+
+export const ModalTitle = styled.div`
+  margin-top: 22px;
+  color: #21272a;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 140%;
+  text-align: center;
+`;
+
+export const ModalDescription = styled.div`
+  margin-top: 28px;
+  margin-bottom: 40px;
+  color: #697077;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 150%;
+  text-align: center;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+`;
+
+export const ModalPrimaryButton = styled.button`
+  width: 100%;
+  height: 54px;
+  border: 1px solid #ffe49a;
+  border-radius: 10px;
+  background: #ffe49a;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+`;
+
+export const ModalSecondaryButton = styled.button`
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  border: 1px solid #ffe49a;
+  border-radius: 10px;
+  background: #fff;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
 `;
