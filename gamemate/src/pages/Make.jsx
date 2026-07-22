@@ -45,7 +45,7 @@ const Make = () => {
         playTimeSlot,
         maxMembers,
       });
-      navigate("/chatroom");
+      navigate("/home");
     } catch (error) {
       setMessage(error.message || "방 생성 중 문제가 발생했습니다.");
     } finally {

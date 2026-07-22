@@ -47,5 +47,11 @@ export const getMyRooms = async () => {
     throw new Error(await parseErrorMessage(response));
   }
 
-  return response.json();
+  const data = await response.json();
+
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  return Array.isArray(data?.results) ? data.results : [];
 };

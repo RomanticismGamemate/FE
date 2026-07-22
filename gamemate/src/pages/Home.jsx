@@ -3,70 +3,30 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { getGames } from "../api/GameApi";
 import { getRooms } from "../api/HomeApi";
-import { applyToRoom } from "../api/ApplyApi";
 import * as H from "../styles/StyledHome";
-import { getMyRooms } from "../api/ChatRoomApi";
 
 const Home = () => {
   const navigate = useNavigate();
-  const goList = () => navigate(`/chat`);
+  const goList = () => navigate("/chat");
   const goRoomDetail = (room) =>
     navigate(`/roomdetail/${room.id}`, { state: { roomId: room.id } });
+  const goApplyRoomDetail = (room) =>
+    navigate(`/roomdetail/${room.id}`, {
+      state: { roomId: room.id, hideMemberList: true },
+    });
   const [selected, setSelected] = useState("all");
   const [games, setGames] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [myChatRooms, setMyChatRooms] = useState([]);
   const [message, setMessage] = useState("");
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
   const [hasCategoryOverflow, setHasCategoryOverflow] = useState(false);
   const gameListRef = useRef(null);
 
-  const [applyingRoomId, setApplyingRoomId] = useState(null);
-
-  const handleApply = async (room) => {
-    if (
-      applyingRoomId === room.id ||
-      room.my_membership_status === "pending" ||
-      room.my_membership_status === "approved" ||
-      room.my_membership_status === "rejected"
-    ) {
-      return;
-    }
-
-    try {
-      setApplyingRoomId(room.id);
-      setMessage("");
-
-      const result = await applyToRoom({
-        roomId: room.id,
-      });
-
-      setRooms((prevRooms) =>
-        prevRooms.map((item) =>
-          item.id === room.id
-            ? {
-                ...item,
-                my_membership_status: result.status || "pending",
-              }
-            : item,
-        ),
-      );
-    } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "가입 신청 중 문제가 발생했습니다.",
-      );
-    } finally {
-      setApplyingRoomId(null);
-    }
-  };
-
   useEffect(() => {
     const loadGames = async () => {
       try {
         const gameList = await getGames();
-        setGames(gameList);
+        setGames(Array.isArray(gameList) ? gameList : []);
       } catch (error) {
         console.error(error);
       }
@@ -80,7 +40,7 @@ const Home = () => {
       try {
         setMessage("");
         const roomList = await getRooms({ game: selected });
-        setRooms(roomList);
+        setRooms(Array.isArray(roomList) ? roomList : []);
       } catch (error) {
         setRooms([]);
         setMessage(
@@ -106,48 +66,28 @@ const Home = () => {
     return () => window.removeEventListener("resize", checkOverflow);
   }, [games]);
 
-  useEffect(() => {
-    const loadMyChatRooms = async () => {
-      try {
-        const chatRoomList = await getMyRooms();
-
-        console.log("내 채팅방 목록:", chatRoomList);
-
-        setMyChatRooms(Array.isArray(chatRoomList) ? chatRoomList : []);
-      } catch (error) {
-        console.error("내 채팅방 목록 조회 실패:", error);
-        setMyChatRooms([]);
-      }
-    };
-
-    loadMyChatRooms();
-  }, []);
-
-  const totalUnreadCount = myChatRooms.reduce(
-    (total, room) => total + Number(room.unread_count ?? 0),
-    0,
-  );
+  const getRoomButtonLabel = (room) => {
+    if (room.my_membership_status === "approved") return "참여 중";
+    if (room.my_membership_status === "pending") return "승인 대기 중";
+    if (room.my_membership_status === "rejected") return "신청 거절됨";
+    return "신청하기";
+  };
 
   return (
     <H.Container>
       <H.Header>
         <H.Title>Game Mate 구하기</H.Title>
         <H.Chat>
-          {totalUnreadCount > 0 && (
-            <H.Alarm id="count">
-              {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
-            </H.Alarm>
-          )}
-
           <H.NBtn onClick={goList}>
             <img
               id="chat"
-              src={`${process.env.PUBLIC_URL}/images/chat_e.svg   `}
+              src={`${process.env.PUBLIC_URL}/images/chat_e.svg`}
               alt="chat"
             />
           </H.NBtn>
         </H.Chat>
       </H.Header>
+
       <H.Category $expanded={isCategoryExpanded}>
         <H.CList ref={gameListRef} $expanded={isCategoryExpanded}>
           <H.LBtn
@@ -211,28 +151,18 @@ const Home = () => {
                 </H.Text>
                 <H.Button
                   type="button"
-                  onClick={() => handleApply(room)}
-                  disabled={
-                    applyingRoomId === room.id ||
-                    room.my_membership_status === "pending" ||
-                    room.my_membership_status === "approved" ||
-                    room.my_membership_status === "rejected"
-                  }
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    goApplyRoomDetail(room);
+                  }}
                 >
-                  {applyingRoomId === room.id
-                    ? "신청 중..."
-                    : room.my_membership_status === "approved"
-                      ? "참여 중"
-                      : room.my_membership_status === "pending"
-                        ? "승인 대기 중"
-                        : room.my_membership_status === "rejected"
-                          ? "신청 거절됨"
-                          : "신청하기"}
+                  {getRoomButtonLabel(room)}
                 </H.Button>
               </H.Content>
             </H.Component>
           ))}
         </H.List>
+
         <H.Make
           onClick={() =>
             navigate("/make", {
@@ -242,7 +172,7 @@ const Home = () => {
         >
           <img
             id="add"
-            src={`${process.env.PUBLIC_URL}/images/add.svg   `}
+            src={`${process.env.PUBLIC_URL}/images/add.svg`}
             alt="add"
           />
           <div>방 만들기</div>
