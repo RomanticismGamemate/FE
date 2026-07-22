@@ -12,6 +12,17 @@ const parseErrorMessage = async (response) => {
   try {
     const errorData = await response.json();
     const detail = errorData?.detail;
+    const fieldMessages = Object.entries(errorData)
+      .filter(([, value]) => Array.isArray(value) || typeof value === "string")
+      .flatMap(([field, value]) => {
+        if (field === "detail" || field === "message" || field === "error") {
+          return [];
+        }
+
+        const messages = Array.isArray(value) ? value : [value];
+
+        return messages.map((message) => `${field}: ${message}`);
+      });
 
     if (typeof detail === "string") {
       return detail;
@@ -19,6 +30,10 @@ const parseErrorMessage = async (response) => {
 
     if (Array.isArray(detail)) {
       return detail.join(" ");
+    }
+
+    if (fieldMessages.length > 0) {
+      return fieldMessages.join("\n");
     }
 
     return (

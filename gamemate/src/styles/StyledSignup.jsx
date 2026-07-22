@@ -196,5 +196,6 @@ export const Message = styled.p`
   font-weight: 600;
   line-height: 140%;
   letter-spacing: 0;
+  white-space: pre-line;
   box-sizing: border-box;
 `;
