@@ -154,10 +154,22 @@ export const Content = styled.div`
 
   box-sizing: border-box;
 
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: ${({ $isScrolling }) =>
+      $isScrolling ? "rgba(0, 0, 0, 0.22) transparent" : "transparent transparent"};
 
   &::-webkit-scrollbar {
-    display: none;
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ $isScrolling }) =>
+      $isScrolling ? "rgba(0, 0, 0, 0.18)" : "transparent"};
+    border-radius: 999px;
   }
 `;
 

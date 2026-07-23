@@ -14,6 +14,7 @@ const Chatroom = () => {
   const { roomId } = useParams();
 
   const contentEndRef = useRef(null);
+  const scrollHideTimerRef = useRef(null);
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -22,6 +23,7 @@ const Chatroom = () => {
   const [isSending, setIsSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const [room, setRoom] = useState(null);
 
@@ -106,6 +108,26 @@ const Chatroom = () => {
       behavior: "smooth",
     });
   }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      if (scrollHideTimerRef.current) {
+        clearTimeout(scrollHideTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleContentScroll = () => {
+    setIsScrolling(true);
+
+    if (scrollHideTimerRef.current) {
+      clearTimeout(scrollHideTimerRef.current);
+    }
+
+    scrollHideTimerRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 800);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -222,7 +244,7 @@ const Chatroom = () => {
       <C.Body>
         <C.Board>
           {errorMessage && <div role="alert">{errorMessage}</div>}
-          <C.Content>
+          <C.Content $isScrolling={isScrolling} onScroll={handleContentScroll}>
             {!isLoading &&
               messages.map((item, index) => {
                 if (item.message_type === "system") {
