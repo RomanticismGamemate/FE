@@ -4,7 +4,7 @@ export const Container = styled.div`
   position: relative;
   margin: 0 auto;
   margin-top: 0px;
-  min-height: 100dvh;
+  height: 100dvh;
   padding: 0; /* 불필요한 패딩 제거 */
   box-sizing: border-box; /* 패딩이 width에 포함되도록 설정 */
   display: flex;
@@ -13,7 +13,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: 402px;
   flex-shrink: 0;
-  padding-bottom: 30px;
+  overflow: hidden;
 `;
 
 export const Header = styled.div`
@@ -122,10 +122,8 @@ export const Body = styled.div`
 
 export const Board = styled.div`
   width: 343px;
-
-  height: calc(100dvh - 174px);
-  min-height: 400px;
-  max-height: 690px;
+  flex: 1;
+  min-height: 0;
 
   border-radius: 30px;
   background: #fffcf4;
