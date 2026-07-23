@@ -92,9 +92,9 @@ export const Category = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 393px;
-  min-height: 65px;
-  max-height: ${({ $expanded }) => ($expanded ? "144px" : "65px")};
-  padding: 18px 25px;
+  min-height: 72px;
+  max-height: ${({ $expanded }) => ($expanded ? "156px" : "72px")};
+  padding: 16px 20px;
   z-index: 999;
   box-sizing: border-box;
   background: #fff0c7;
@@ -106,21 +106,22 @@ export const CList = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: ${({ $expanded }) => ($expanded ? "wrap" : "nowrap")};
-  gap: 10px;
-  width: calc(100% - 34px);
+  gap: 3px;
+  width: ${({ $hasToggle }) => ($hasToggle ? "calc(100% - 46px)" : "100%")};
   align-items: center;
+  justify-content: space-between;
   white-space: nowrap;
   overflow: ${({ $expanded }) => ($expanded ? "auto" : "hidden")};
-  max-height: ${({ $expanded }) => ($expanded ? "108px" : "29px")};
-  padding-right: 2px;
+  max-height: ${({ $expanded }) => ($expanded ? "124px" : "40px")};
   box-sizing: border-box;
 `;
 
 export const LBtn = styled.button`
   display: flex;
-  flex: 0 0 auto;
-  height: 28px;
-  padding: 10px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: ${({ $icon }) => ($icon ? "2px" : "0")};
   justify-content: center;
   align-items: center;
 
@@ -130,14 +131,22 @@ export const LBtn = styled.button`
 
   color: #000;
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 11px;
   font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  letter-spacing: -0.3px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.22px;
 
   cursor: pointer;
   transition: background-color 0.2s ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+  }
 `;
 
 export const Plus = styled.div`
@@ -148,10 +157,10 @@ export const Plus = styled.div`
 
 export const CategoryToggle = styled.button`
   position: absolute;
-  top: 18px;
-  right: 25px;
-  width: 28px;
-  height: 28px;
+  top: 16px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 10px;
   background: #fffcf4;
@@ -178,7 +187,7 @@ export const CategoryToggle = styled.button`
 
 export const Body = styled.div`
   position: fixed;
-  top: ${({ $categoryExpanded }) => ($categoryExpanded ? "281px" : "202px")};
+  top: ${({ $categoryExpanded }) => ($categoryExpanded ? "293px" : "209px")};
   bottom: 110px;
   left: 50%;
   transform: translateX(-50%);

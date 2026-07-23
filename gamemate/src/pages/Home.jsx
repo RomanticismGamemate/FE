@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { getGames } from "../api/GameApi";
 import { getRooms } from "../api/HomeApi";
 import { getMyRooms } from "../api/ChatRoomApi";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import * as H from "../styles/StyledHome";
+
+const HIDDEN_GAME_SLUGS = new Set(["wss-test"]);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -23,6 +26,11 @@ const Home = () => {
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
   const [hasCategoryOverflow, setHasCategoryOverflow] = useState(false);
   const gameListRef = useRef(null);
+
+  const filterGames = useMemo(
+    () => games.filter((gameItem) => !HIDDEN_GAME_SLUGS.has(gameItem.slug)),
+    [games],
+  );
 
   useEffect(() => {
     const loadGames = async () => {
@@ -79,20 +87,37 @@ const Home = () => {
       if (!gameListRef.current) return;
 
       const list = gameListRef.current;
-      setHasCategoryOverflow(list.scrollWidth > list.clientWidth);
+      setHasCategoryOverflow(list.scrollWidth > list.clientWidth + 1);
     };
 
     checkOverflow();
     window.addEventListener("resize", checkOverflow);
 
     return () => window.removeEventListener("resize", checkOverflow);
-  }, [games]);
+  }, [filterGames]);
 
   const getRoomButtonLabel = (room) => {
     if (room.my_membership_status === "approved") return "참여 중";
     if (room.my_membership_status === "pending") return "승인 대기 중";
     if (room.my_membership_status === "rejected") return "신청 거절됨";
     return "신청하기";
+  };
+
+  const renderGameFilterLabel = (gameItem) => {
+    if (gameItem.slug === "etc") {
+      return "ETC";
+    }
+
+    if (hasGameLogo(gameItem.slug)) {
+      return (
+        <img
+          src={getGameLogoSrc(gameItem.slug)}
+          alt={gameItem.name_ko || gameItem.short_name || gameItem.name}
+        />
+      );
+    }
+
+    return gameItem.short_name || gameItem.name_ko || gameItem.name;
   };
 
   return (
@@ -122,30 +147,38 @@ const Home = () => {
       </H.Header>
 
       <H.Category $expanded={isCategoryExpanded}>
-        <H.CList ref={gameListRef} $expanded={isCategoryExpanded}>
+        <H.CList
+          ref={gameListRef}
+          $expanded={isCategoryExpanded}
+          $hasToggle={hasCategoryOverflow}
+        >
           <H.LBtn
+            type="button"
             $selected={selected === "all"}
             onClick={() => setSelected("all")}
+            aria-label="전체"
           >
-            전체
+            ALL
           </H.LBtn>
 
-          {games.map((gameItem) => (
-            <H.LBtn
-              key={gameItem.id}
-              $selected={selected === gameItem.slug}
-              onClick={() => setSelected(gameItem.slug)}
-            >
-              {gameItem.name_ko || gameItem.short_name || gameItem.name}
-            </H.LBtn>
-          ))}
-          <H.Plus>
-            <img
-              id="add"
-              src={`${process.env.PUBLIC_URL}/images/add.svg`}
-              alt="add"
-            />
-          </H.Plus>
+          {filterGames.map((gameItem) => {
+            const isIcon = hasGameLogo(gameItem.slug);
+
+            return (
+              <H.LBtn
+                key={gameItem.id}
+                type="button"
+                $icon={isIcon}
+                $selected={selected === gameItem.slug}
+                onClick={() => setSelected(gameItem.slug)}
+                aria-label={
+                  gameItem.name_ko || gameItem.short_name || gameItem.name
+                }
+              >
+                {renderGameFilterLabel(gameItem)}
+              </H.LBtn>
+            );
+          })}
         </H.CList>
         {hasCategoryOverflow && (
           <H.CategoryToggle
