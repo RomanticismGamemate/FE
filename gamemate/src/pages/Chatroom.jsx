@@ -14,6 +14,7 @@ const Chatroom = () => {
   const { roomId } = useParams();
 
   const contentEndRef = useRef(null);
+  const messageInputRef = useRef(null);
   const scrollHideTimerRef = useRef(null);
 
   const [message, setMessage] = useState("");
@@ -26,6 +27,20 @@ const Chatroom = () => {
   const [isScrolling, setIsScrolling] = useState(false);
 
   const [room, setRoom] = useState(null);
+
+  const MESSAGE_INPUT_MIN_HEIGHT = 41;
+  const MESSAGE_INPUT_MAX_HEIGHT = 122;
+
+  const resizeMessageInput = (element) => {
+    if (!element) return;
+
+    element.style.height = `${MESSAGE_INPUT_MIN_HEIGHT}px`;
+    const nextHeight = Math.min(
+      Math.max(element.scrollHeight, MESSAGE_INPUT_MIN_HEIGHT),
+      MESSAGE_INPUT_MAX_HEIGHT,
+    );
+    element.style.height = `${nextHeight}px`;
+  };
 
   useEffect(() => {
     if (!roomId) {
@@ -164,6 +179,9 @@ const Chatroom = () => {
       });
 
       setMessage("");
+      requestAnimationFrame(() => {
+        resizeMessageInput(messageInputRef.current);
+      });
     } catch (error) {
       setErrorMessage(
         error instanceof Error
@@ -173,6 +191,11 @@ const Chatroom = () => {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleMessageChange = (event) => {
+    setMessage(event.target.value);
+    resizeMessageInput(event.target);
   };
 
   const handleKeyDown = (event) => {
@@ -313,8 +336,9 @@ const Chatroom = () => {
 
           <C.Input onSubmit={handleSubmit}>
             <C.Message
+              ref={messageInputRef}
               value={message}
-              onChange={(event) => setMessage(event.target.value)}
+              onChange={handleMessageChange}
               onKeyDown={handleKeyDown}
               placeholder="메시지를 입력하세요"
               rows={1}

@@ -301,8 +301,9 @@ export const Message = styled.textarea`
   flex: 1;
   min-width: 0;
 
+  min-height: 41px;
   height: 41px;
-  max-height: 100px;
+  max-height: 122px;
 
   padding: 10px 16px;
 
@@ -318,8 +319,15 @@ export const Message = styled.textarea`
 
   outline: none;
   resize: none;
+  overflow-y: auto;
 
   box-sizing: border-box;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &::placeholder {
     color: #a4a4a4;
