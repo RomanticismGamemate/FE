@@ -9,6 +9,7 @@ const SignupLogin = () => {
   const location = useLocation();
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("error");
   const [isLoading, setIsLoading] = useState(false);
@@ -81,14 +82,30 @@ const SignupLogin = () => {
 
             <S.Field>
               <label htmlFor="password">비밀번호</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="비밀번호"
-                autoComplete="current-password"
-              />
+              <S.PasswordField>
+                <input
+                  id="password"
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="비밀번호"
+                  autoComplete="current-password"
+                />
+                <S.PasswordToggle
+                  type="button"
+                  onClick={() => setIsPasswordVisible((prev) => !prev)}
+                  aria-label={
+                    isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"
+                  }
+                >
+                  <img
+                    src={`${process.env.PUBLIC_URL}/images/${
+                      isPasswordVisible ? "eye-off.svg" : "eye.svg"
+                    }`}
+                    alt=""
+                  />
+                </S.PasswordToggle>
+              </S.PasswordField>
             </S.Field>
           </S.FieldGroup>
 
