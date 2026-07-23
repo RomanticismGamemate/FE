@@ -16,6 +16,7 @@ const Chatroom = () => {
   const contentEndRef = useRef(null);
   const messageInputRef = useRef(null);
   const scrollHideTimerRef = useRef(null);
+  const isNearBottomRef = useRef(true);
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -25,11 +26,13 @@ const Chatroom = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
   const [room, setRoom] = useState(null);
 
   const MESSAGE_INPUT_MIN_HEIGHT = 41;
   const MESSAGE_INPUT_MAX_HEIGHT = 122;
+  const BOTTOM_THRESHOLD = 80;
 
   const resizeMessageInput = (element) => {
     if (!element) return;
@@ -40,6 +43,25 @@ const Chatroom = () => {
       MESSAGE_INPUT_MAX_HEIGHT,
     );
     element.style.height = `${nextHeight}px`;
+  };
+
+  const updateNearBottomState = (element) => {
+    if (!element) return;
+
+    const distanceFromBottom =
+      element.scrollHeight - element.scrollTop - element.clientHeight;
+    const nearBottom = distanceFromBottom <= BOTTOM_THRESHOLD;
+
+    isNearBottomRef.current = nearBottom;
+    setShowScrollToBottom(!nearBottom);
+  };
+
+  const scrollToBottom = () => {
+    contentEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+    isNearBottomRef.current = true;
+    setShowScrollToBottom(false);
   };
 
   useEffect(() => {
@@ -116,9 +138,11 @@ const Chatroom = () => {
   }, [roomId]);
 
   /*
-   * 메시지 목록이 변경되면 가장 아래로 이동합니다.
+   * 최하단에 있을 때만 새 메시지에 맞춰 자동으로 내려갑니다.
    */
   useEffect(() => {
+    if (!isNearBottomRef.current) return;
+
     contentEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
@@ -132,8 +156,9 @@ const Chatroom = () => {
     };
   }, []);
 
-  const handleContentScroll = () => {
+  const handleContentScroll = (event) => {
     setIsScrolling(true);
+    updateNearBottomState(event.currentTarget);
 
     if (scrollHideTimerRef.current) {
       clearTimeout(scrollHideTimerRef.current);
@@ -178,6 +203,8 @@ const Chatroom = () => {
         return [...previousMessages, createdMessage];
       });
 
+      isNearBottomRef.current = true;
+      setShowScrollToBottom(false);
       setMessage("");
       requestAnimationFrame(() => {
         resizeMessageInput(messageInputRef.current);
@@ -267,72 +294,87 @@ const Chatroom = () => {
       <C.Body>
         <C.Board>
           {errorMessage && <div role="alert">{errorMessage}</div>}
-          <C.Content $isScrolling={isScrolling} onScroll={handleContentScroll}>
-            {!isLoading &&
-              messages.map((item, index) => {
-                if (item.message_type === "system") {
-                  return (
-                    <C.Alert key={item.id}>
-                      <div>{item.content}</div>
-                    </C.Alert>
-                  );
-                }
-                let previousUserMessage = null;
-
-                for (let i = index - 1; i >= 0; i -= 1) {
-                  if (messages[i].message_type !== "system") {
-                    previousUserMessage = messages[i];
-                    break;
-                  }
-                }
-
-                const previousSenderId = previousUserMessage?.sender?.id;
-                const currentSenderId = item.sender?.id;
-
-                const isSameSender =
-                  previousSenderId != null &&
-                  currentSenderId != null &&
-                  String(previousSenderId) === String(currentSenderId);
-
-                const isMyMessage =
-                  currentUser &&
-                  String(item.sender?.id) === String(currentUser.id);
-
-                if (isMyMessage) {
-                  return (
-                    <C.Me key={item.id} $isSameSender={isSameSender}>
-                      <div>{item.content}</div>
-                    </C.Me>
-                  );
-                }
-
-                return (
-                  <C.Opp key={item.id} $isSameSender={isSameSender}>
-                    <C.Prof
-                      as="img"
-                      $isVisible={!isSameSender}
-                      src={getProfileAvatarSrc(item.sender?.profile_avatar)}
-                      alt=""
-                    />
-                    <C.Right>
-                      {!isSameSender && (
-                        <span id="name">
-                          {item.sender?.nickname ||
-                            item.sender?.username ||
-                            "사용자"}
-                        </span>
-                      )}
-
-                      <C.OMs>
+          <C.MessagePane>
+            <C.Content $isScrolling={isScrolling} onScroll={handleContentScroll}>
+              {!isLoading &&
+                messages.map((item, index) => {
+                  if (item.message_type === "system") {
+                    return (
+                      <C.Alert key={item.id}>
                         <div>{item.content}</div>
-                      </C.OMs>
-                    </C.Right>
-                  </C.Opp>
-                );
-              })}
+                      </C.Alert>
+                    );
+                  }
+                  let previousUserMessage = null;
 
-            <div ref={contentEndRef} />
-          </C.Content>
+                  for (let i = index - 1; i >= 0; i -= 1) {
+                    if (messages[i].message_type !== "system") {
+                      previousUserMessage = messages[i];
+                      break;
+                    }
+                  }
+
+                  const previousSenderId = previousUserMessage?.sender?.id;
+                  const currentSenderId = item.sender?.id;
+
+                  const isSameSender =
+                    previousSenderId != null &&
+                    currentSenderId != null &&
+                    String(previousSenderId) === String(currentSenderId);
+
+                  const isMyMessage =
+                    currentUser &&
+                    String(item.sender?.id) === String(currentUser.id);
+
+                  if (isMyMessage) {
+                    return (
+                      <C.Me key={item.id} $isSameSender={isSameSender}>
+                        <div>{item.content}</div>
+                      </C.Me>
+                    );
+                  }
+
+                  return (
+                    <C.Opp key={item.id} $isSameSender={isSameSender}>
+                      <C.Prof
+                        as="img"
+                        $isVisible={!isSameSender}
+                        src={getProfileAvatarSrc(item.sender?.profile_avatar)}
+                        alt=""
+                      />
+                      <C.Right>
+                        {!isSameSender && (
+                          <span id="name">
+                            {item.sender?.nickname ||
+                              item.sender?.username ||
+                              "사용자"}
+                          </span>
+                        )}
+
+                        <C.OMs>
+                          <div>{item.content}</div>
+                        </C.OMs>
+                      </C.Right>
+                    </C.Opp>
+                  );
+                })}
+
+              <div ref={contentEndRef} />
+            </C.Content>
+
+            {showScrollToBottom && (
+              <C.ScrollToBottom
+                type="button"
+                onClick={scrollToBottom}
+                aria-label="최신 메시지로 이동"
+              >
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/chevron-down.svg`}
+                  alt=""
+                />
+              </C.ScrollToBottom>
+            )}
+          </C.MessagePane>
 
           <C.Input onSubmit={handleSubmit}>
             <C.Message

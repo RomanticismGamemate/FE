@@ -139,6 +139,15 @@ export const Board = styled.div`
   overflow: hidden;
 `;
 
+export const MessagePane = styled.div`
+  position: relative;
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+`;
+
 export const Content = styled.div`
   width: 100%;
   flex: 1;
@@ -170,6 +179,41 @@ export const Content = styled.div`
     background: ${({ $isScrolling }) =>
       $isScrolling ? "rgba(0, 0, 0, 0.18)" : "transparent"};
     border-radius: 999px;
+  }
+`;
+
+export const ScrollToBottom = styled.button`
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  border: 1px solid #ffe49a;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: #fffaf0;
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.96);
   }
 `;
 
