@@ -32,14 +32,38 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.div`
-  gap: 37px;
+  gap: 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 0;
+  flex: 1;
 
-  img {
+  #back {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+`;
+
+export const RoomImg = styled.div`
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: #d9d9d9;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
   }
 `;
 
@@ -48,6 +72,7 @@ export const CTitle = styled.div`
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
   cursor: pointer;
 
   #title {
@@ -58,6 +83,9 @@ export const CTitle = styled.div`
     font-weight: 500;
     line-height: normal;
     letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #members {

@@ -5,6 +5,8 @@ import { getRoomMessages, postRoomMessage } from "../api/ChatApi";
 import { getMyInfo } from "../api/UserApi";
 import { getMyRooms } from "../api/ChatRoomApi";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 import { navigateBackOrHome } from "../utils/navigation";
 
 const Chatroom = () => {
@@ -254,6 +256,10 @@ const Chatroom = () => {
     });
   };
 
+  const gameSlug = room?.game?.slug;
+  const logoSrc = hasGameLogo(gameSlug) ? getGameLogoSrc(gameSlug) : null;
+  const roomImgColor = getVariedGameColor(room?.game?.color, room?.id || roomId);
+
   return (
     <C.Container>
       <C.Header>
@@ -264,6 +270,14 @@ const Chatroom = () => {
             alt="back"
             onClick={goBack}
           />
+          <C.RoomImg style={{ background: roomImgColor }}>
+            {logoSrc && (
+              <img
+                src={logoSrc}
+                alt={room?.game?.name_ko || room?.game?.name || "게임"}
+              />
+            )}
+          </C.RoomImg>
           <C.CTitle
             role="button"
             tabIndex={0}
