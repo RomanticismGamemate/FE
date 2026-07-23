@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getGames } from "../api/GameApi";
 import { createRoom } from "../api/MakeApi";
+import { postRoomMessage } from "../api/ChatApi";
 import * as M from "../styles/StyledMake";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { navigateBackOrHome } from "../utils/navigation";
@@ -49,13 +50,29 @@ const Make = () => {
     setIsLoading(true);
 
     try {
-      await createRoom({
+      const createdRoom = await createRoom({
         title,
         description,
         game,
         playTimeSlot,
         maxMembers,
       });
+
+      const roomTitle = createdRoom?.title || title.trim();
+      const createdRoomId = createdRoom?.id;
+
+      if (createdRoomId) {
+        try {
+          await postRoomMessage({
+            roomId: createdRoomId,
+            content: `${roomTitle}방이 생성되었습니다.`,
+            messageType: "system",
+          });
+        } catch (error) {
+          console.error("방 생성 안내 메시지를 보내지 못했습니다.", error);
+        }
+      }
+
       navigate("/home");
     } catch (error) {
       setMessage(error.message || "방 생성 중 문제가 발생했습니다.");

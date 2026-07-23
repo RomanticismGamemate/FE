@@ -36,7 +36,11 @@ const getAccessToken = () => {
   return accessToken;
 };
 
-export const postRoomMessage = async ({ roomId, content } = {}) => {
+export const postRoomMessage = async ({
+  roomId,
+  content,
+  messageType,
+} = {}) => {
   if (roomId === undefined || roomId === null || roomId === "") {
     throw new Error("채팅방 ID가 필요합니다.");
   }
@@ -51,6 +55,14 @@ export const postRoomMessage = async ({ roomId, content } = {}) => {
     throw new Error("메시지는 1000자 이하로 입력해 주세요.");
   }
 
+  const payload = {
+    content: trimmedContent,
+  };
+
+  if (messageType) {
+    payload.message_type = messageType;
+  }
+
   const response = await authFetch(
     `${ROOMS_URL}${encodeURIComponent(roomId)}/messages/`,
     {
@@ -59,9 +71,7 @@ export const postRoomMessage = async ({ roomId, content } = {}) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        content: trimmedContent,
-      }),
+      body: JSON.stringify(payload),
     },
   );
 

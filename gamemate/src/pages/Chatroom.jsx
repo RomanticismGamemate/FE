@@ -7,6 +7,7 @@ import { getMyRooms } from "../api/ChatRoomApi";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
+import { isSystemChatMessage } from "../utils/chatMessage";
 import { navigateBackOrHome } from "../utils/navigation";
 
 const Chatroom = () => {
@@ -312,7 +313,7 @@ const Chatroom = () => {
             <C.Content $isScrolling={isScrolling} onScroll={handleContentScroll}>
               {!isLoading &&
                 messages.map((item, index) => {
-                  if (item.message_type === "system") {
+                  if (isSystemChatMessage(item)) {
                     return (
                       <C.Alert key={item.id}>
                         <div>{item.content}</div>
@@ -322,7 +323,7 @@ const Chatroom = () => {
                   let previousUserMessage = null;
 
                   for (let i = index - 1; i >= 0; i -= 1) {
-                    if (messages[i].message_type !== "system") {
+                    if (!isSystemChatMessage(messages[i])) {
                       previousUserMessage = messages[i];
                       break;
                     }
