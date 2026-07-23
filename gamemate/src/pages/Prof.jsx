@@ -5,6 +5,8 @@ import { deleteRoom, leaveRoom } from "../api/RoomApi";
 import Navbar from "../components/Navbar";
 import * as P from "../styles/StyledProf";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 
 const getStoredUser = () => {
   try {
@@ -225,12 +227,24 @@ const Prof = () => {
 
           {visibleRooms.map((room) => {
             const isOwner = isOwnerRoom(room);
+            const logoSrc = hasGameLogo(room.game?.slug)
+              ? getGameLogoSrc(room.game.slug)
+              : null;
 
             return (
               <P.Component key={room.id} onClick={() => goDetail(room)}>
                 <P.ProfileImg
-                  style={{ background: room.game?.color || "#d9d9d9" }}
-                />
+                  style={{
+                    background: getVariedGameColor(room.game?.color, room.id),
+                  }}
+                >
+                  {logoSrc && (
+                    <img
+                      src={logoSrc}
+                      alt={room.game?.name_ko || room.game?.name || "게임"}
+                    />
+                  )}
+                </P.ProfileImg>
                 <P.Content>
                   <P.Text>
                     <P.Up>
