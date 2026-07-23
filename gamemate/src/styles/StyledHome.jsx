@@ -196,23 +196,46 @@ export const Body = styled.div`
   padding-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+  align-items: stretch;
+  overflow-y: scroll;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   box-sizing: border-box;
   transition: top 0.2s ease;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.22);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.32);
+  }
 `;
 
 export const List = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 13px 25px;
+  width: 100%;
+  padding: 13px 12px 13px 25px;
   flex: 0 0 auto;
+  box-sizing: border-box;
 `;
 
 export const Component = styled.div`
-  width: 343px;
+  width: 100%;
   height: 126px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
@@ -221,17 +244,20 @@ export const Component = styled.div`
   display: flex;
   flex-direction: row;
   gap: 13px;
+  box-sizing: border-box;
 `;
 
 export const Img = styled.div`
   width: 35px;
   height: 35px;
+  flex-shrink: 0;
   background: #d9d9d9;
   border-radius: 50%;
 `;
 
 export const Content = styled.div`
-  width: 265px;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -282,7 +308,7 @@ export const Down = styled.div`
 export const Button = styled.button`
   outline: none;
   border: transparent;
-  width: 265px;
+  width: 100%;
   height: 33px;
   border-radius: 10px;
   background: #fff0c7;
@@ -298,7 +324,7 @@ export const Button = styled.button`
 `;
 
 export const Message = styled.p`
-  width: 343px;
+  width: 100%;
   color: #d93025;
   margin: 0;
   font-family: Pretendard;
@@ -310,20 +336,20 @@ export const Message = styled.p`
 `;
 
 export const Make = styled.div`
-  width: 343px;
+  width: calc(100% - 37px);
   height: 42px;
   min-height: 42px;
   flex: 0 0 42px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
   background: #ffe49a;
-  margin-top: 30px;
-  margin-bottom: 4px;
+  margin: 30px 12px 4px 25px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-sizing: border-box;
 
   img {
     width: 15px;
