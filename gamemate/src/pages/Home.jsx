@@ -5,6 +5,7 @@ import { getGames } from "../api/GameApi";
 import { getRooms } from "../api/HomeApi";
 import { getMyRooms } from "../api/ChatRoomApi";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 import * as H from "../styles/StyledHome";
 
 const HIDDEN_GAME_SLUGS = new Set(["wss-test"]);
@@ -198,35 +199,53 @@ const Home = () => {
         <H.List>
           {message && <H.Message>{message}</H.Message>}
 
-          {rooms.map((room) => (
-            <H.Component key={room.id} onClick={() => goRoomDetail(room)}>
-              <H.Img style={{ background: room.game?.color || "#d9d9d9" }} />
-              <H.Content>
-                <H.Text>
-                  <H.Up>
-                    <div id="title">{room.title}</div>
-                    <div id="members">
-                      {room.approved_member_count}/{room.max_members}
-                    </div>
-                  </H.Up>
-                  <H.Down>
-                    {room.description || "방 소개 없음"} /{" "}
-                    {room.play_time_label || "시간대 미정"} /{" "}
-                    {room.game?.name_ko || room.game?.name}
-                  </H.Down>
-                </H.Text>
-                <H.Button
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    goApplyRoomDetail(room);
-                  }}
-                >
-                  {getRoomButtonLabel(room)}
-                </H.Button>
-              </H.Content>
-            </H.Component>
-          ))}
+          {rooms.map((room) => {
+            const gameSlug = room.game?.slug;
+            const logoSrc = hasGameLogo(gameSlug)
+              ? getGameLogoSrc(gameSlug)
+              : null;
+            const avatarColor = getVariedGameColor(
+              room.game?.color,
+              room.id,
+            );
+
+            return (
+              <H.Component key={room.id} onClick={() => goRoomDetail(room)}>
+                <H.Img style={{ background: avatarColor }}>
+                  {logoSrc && (
+                    <img
+                      src={logoSrc}
+                      alt={room.game?.name_ko || room.game?.name || "게임"}
+                    />
+                  )}
+                </H.Img>
+                <H.Content>
+                  <H.Text>
+                    <H.Up>
+                      <div id="title">{room.title}</div>
+                      <div id="members">
+                        {room.approved_member_count}/{room.max_members}
+                      </div>
+                    </H.Up>
+                    <H.Down>
+                      {room.description || "방 소개 없음"} /{" "}
+                      {room.play_time_label || "시간대 미정"} /{" "}
+                      {room.game?.name_ko || room.game?.name}
+                    </H.Down>
+                  </H.Text>
+                  <H.Button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      goApplyRoomDetail(room);
+                    }}
+                  >
+                    {getRoomButtonLabel(room)}
+                  </H.Button>
+                </H.Content>
+              </H.Component>
+            );
+          })}
         </H.List>
 
         <H.Make

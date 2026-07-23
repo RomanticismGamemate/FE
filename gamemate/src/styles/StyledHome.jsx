@@ -253,6 +253,18 @@ export const Img = styled.div`
   flex-shrink: 0;
   background: #d9d9d9;
   border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
+  }
 `;
 
 export const Content = styled.div`
