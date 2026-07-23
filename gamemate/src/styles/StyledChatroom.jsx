@@ -221,7 +221,8 @@ export const Alert = styled.div`
   width: 100%;
 
   display: flex;
-  margin-bottom: 36px;
+  margin-top: 18px;
+  margin-bottom: 18px;
 
   align-items: center;
   justify-content: center;
