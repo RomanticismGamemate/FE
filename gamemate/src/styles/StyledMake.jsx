@@ -202,31 +202,55 @@ letter-spacing: -0.3px;
 
 `;
 export const GameSelect = styled.div`
-display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-select{
-appearance: none;
--webkit-appearance: none;
-padding:20px 48px 20px 20px;
-width: 343px;
-background: #ffffff;
-background-image: url("/images/chevron-down.svg");
-background-repeat: no-repeat;
-background-position: right 18px center;
-background-size: 16px 16px;
-border: 1px solid #D9D9D9;
-border-radius: 10px;
-color: #A2A2A2;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
-}
+  width: 343px;
+`;
 
+export const GameList = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 3px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const GameBtn = styled.button`
+  display: flex;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: ${({ $icon }) => ($icon ? "2px" : "0")};
+  justify-content: center;
+  align-items: center;
+
+  border: ${({ $selected }) =>
+    $selected ? "1px solid #f4c430" : "1px solid transparent"};
+  border-radius: 10px;
+  background: ${({ $selected }) => ($selected ? "#ffe49a" : "#fff")};
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.22px;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+  }
 `;
 export const TitleInput = styled.div`
 display: flex;
