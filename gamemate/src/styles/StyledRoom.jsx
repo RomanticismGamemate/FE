@@ -123,6 +123,18 @@ export const ProfileImg = styled.div`
   background: #d9d9d9;
   border-radius: 50%;
   flex: 0 0 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
+  }
 `;
 
 export const Content = styled.div`

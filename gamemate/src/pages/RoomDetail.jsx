@@ -4,6 +4,8 @@ import { applyToRoom } from "../api/ApplyApi";
 import { getRoomDetail, getRoomMembers } from "../api/RoomApi";
 import * as R from "../styles/StyledRoom";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 import { navigateBackOrHome } from "../utils/navigation";
 
 const getCurrentUser = () => {
@@ -149,6 +151,9 @@ const RoomDetail = () => {
     (hasApplied &&
       room?.my_membership_status !== "approved" &&
       room?.my_membership_status !== "rejected");
+  const gameSlug = room?.game?.slug;
+  const logoSrc = hasGameLogo(gameSlug) ? getGameLogoSrc(gameSlug) : null;
+  const roomImgColor = getVariedGameColor(room?.game?.color, room?.id || roomId);
 
   const actionLabel = isMember
     ? "채팅방으로 이동"
@@ -195,9 +200,14 @@ const RoomDetail = () => {
           {room && (
             <R.Content>
               <R.TitleContent>
-                <R.ProfileImg
-                  style={{ background: room.game?.color || "#d9d9d9" }}
-                />
+                <R.ProfileImg style={{ background: roomImgColor }}>
+                  {logoSrc && (
+                    <img
+                      src={logoSrc}
+                      alt={room.game?.name_ko || room.game?.name || "게임"}
+                    />
+                  )}
+                </R.ProfileImg>
 
                 <R.Text>
                   <R.Up>
