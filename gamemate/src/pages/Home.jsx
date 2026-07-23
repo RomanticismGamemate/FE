@@ -59,7 +59,10 @@ const Home = () => {
       try {
         setMessage("");
         const roomList = await getRooms({ game: selected });
-        setRooms(Array.isArray(roomList) ? roomList : []);
+        const openRooms = (Array.isArray(roomList) ? roomList : []).filter(
+          (room) => (room.status || "open") === "open",
+        );
+        setRooms(openRooms);
       } catch (error) {
         setRooms([]);
         setMessage(
