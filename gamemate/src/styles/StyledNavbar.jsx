@@ -8,7 +8,7 @@ export const Nav = styled.div`
   align-items: center;
   width: 216px;
   height: 65px;
-  z-index: 1000;
+  z-index: 1100;
   position: fixed;
   bottom: 30px;
   left: 50%;

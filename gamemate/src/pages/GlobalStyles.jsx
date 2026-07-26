@@ -1,6 +1,12 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`  
+  @property --scrollbar-thumb-alpha {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+  }
+
   @font-face { font-family: 'Pretendard'; src: url('/fonts/pretendard/Pretendard-Regular.woff') format('woff'); font-weight: 400; font-display: swap; } 
   
   @font-face { font-family: 'Pretendard'; src: url('/fonts/pretendard/Pretendard-Medium.woff') format('woff'); font-weight: 500; font-display: swap; } 

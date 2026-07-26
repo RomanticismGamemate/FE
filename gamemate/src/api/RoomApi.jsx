@@ -145,3 +145,42 @@ export const deleteRoom = async (roomId) => {
 
   return response.status === 204 ? null : response.json();
 };
+
+/**
+ * 디스코드 초대 URL 수정
+ * PATCH /api/rooms/<roomId>/
+ */
+export const updateRoomDiscordInvite = async (roomId, discordInviteUrl) => {
+  if (!roomId) {
+    throw new Error("방 정보를 찾을 수 없습니다.");
+  }
+
+  const response = await authFetch(`${ROOMS_URL}${roomId}/`, {
+    method: "PATCH",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      discord_invite_url: String(discordInviteUrl || "").trim(),
+    }),
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("로그인 정보가 만료되었습니다. 다시 로그인해 주세요.");
+    }
+
+    if (response.status === 403) {
+      throw new Error("디스코드 링크를 수정할 권한이 없습니다.");
+    }
+
+    if (response.status === 404) {
+      throw new Error("존재하지 않는 방입니다.");
+    }
+
+    throw new Error(await parseErrorMessage(response));
+  }
+
+  return response.status === 204 ? null : response.json();
+};

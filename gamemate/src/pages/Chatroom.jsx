@@ -4,6 +4,7 @@ import * as C from "../styles/StyledChatroom";
 import { getRoomMessages, postRoomMessage } from "../api/ChatApi";
 import { getMyInfo } from "../api/UserApi";
 import { getMyRooms } from "../api/ChatRoomApi";
+import { updateRoomDiscordInvite } from "../api/RoomApi";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
@@ -32,10 +33,21 @@ const Chatroom = () => {
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
   const [room, setRoom] = useState(null);
+  const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
+  const [discordUrlDraft, setDiscordUrlDraft] = useState("");
+  const [discordModalError, setDiscordModalError] = useState("");
+  const [isSavingDiscord, setIsSavingDiscord] = useState(false);
 
   const MESSAGE_INPUT_MIN_HEIGHT = 41;
   const MESSAGE_INPUT_MAX_HEIGHT = 122;
   const BOTTOM_THRESHOLD = 80;
+
+  const hasDiscordUrl = Boolean(room?.discord_invite_url?.trim());
+  const isOwner =
+    room?.is_owner === true ||
+    (currentUser?.id != null &&
+      Number(room?.owner?.id ?? room?.owner_id) === Number(currentUser.id));
+  const isDiscordDisabled = !isOwner && !hasDiscordUrl;
 
   const resizeMessageInput = (element) => {
     if (!element) return;
@@ -242,9 +254,62 @@ const Chatroom = () => {
   };
 
   const handleDiscordClick = () => {
-    if (!room?.discord_invite_url) return;
+    if (isOwner) {
+      setDiscordUrlDraft(room?.discord_invite_url || "");
+      setDiscordModalError("");
+      setIsDiscordModalOpen(true);
+      return;
+    }
+
+    if (!room?.discord_invite_url?.trim()) return;
 
     window.open(room.discord_invite_url, "_blank", "noopener,noreferrer");
+  };
+
+  const closeDiscordModal = () => {
+    if (isSavingDiscord) return;
+    setIsDiscordModalOpen(false);
+    setDiscordModalError("");
+  };
+
+  const handleSaveDiscordUrl = async (event) => {
+    event.preventDefault();
+    if (!roomId || isSavingDiscord) return;
+
+    try {
+      setIsSavingDiscord(true);
+      setDiscordModalError("");
+
+      const updatedRoom = await updateRoomDiscordInvite(
+        roomId,
+        discordUrlDraft,
+      );
+
+      setRoom((prev) => ({
+        ...prev,
+        ...(updatedRoom || {}),
+        discord_invite_url:
+          updatedRoom?.discord_invite_url ?? discordUrlDraft.trim(),
+      }));
+      setIsDiscordModalOpen(false);
+
+      try {
+        const messageData = await getRoomMessages({ roomId });
+        setMessages(Array.isArray(messageData) ? messageData : []);
+        isNearBottomRef.current = true;
+        setShowScrollToBottom(false);
+      } catch {
+        setErrorMessage(
+          "디스코드 링크는 저장됐지만, 채팅 메시지를 새로고침하지 못했습니다.",
+        );
+      }
+    } catch (error) {
+      setDiscordModalError(
+        error.message || "디스코드 링크를 저장하지 못했습니다.",
+      );
+    } finally {
+      setIsSavingDiscord(false);
+    }
   };
 
   const goRoomDetail = () => {
@@ -295,15 +360,21 @@ const Chatroom = () => {
             <div id="members">참여 {room?.approved_member_count ?? 0}명</div>
           </C.CTitle>
         </C.Title>
-        {room?.discord_invite_url?.trim() && (
-          <C.NBtn onClick={handleDiscordClick}>
-            <img
-              id="discord"
-              src={`${process.env.PUBLIC_URL}/images/discord.svg`}
-              alt="discord"
-            />
-          </C.NBtn>
-        )}
+        <C.NBtn
+          type="button"
+          $disabled={isDiscordDisabled}
+          onClick={handleDiscordClick}
+          aria-label={
+            isOwner ? "디스코드 초대 링크 설정" : "디스코드 초대 링크 열기"
+          }
+          aria-disabled={isDiscordDisabled}
+        >
+          <img
+            id="discord"
+            src={`${process.env.PUBLIC_URL}/images/discord.svg`}
+            alt="discord"
+          />
+        </C.NBtn>
       </C.Header>
 
       <C.Body>
@@ -418,6 +489,38 @@ const Chatroom = () => {
           </C.Input>
         </C.Board>
       </C.Body>
+
+      {isDiscordModalOpen && (
+        <C.ModalOverlay>
+          <C.Modal as="form" onSubmit={handleSaveDiscordUrl}>
+            <C.ModalTitle>디스코드 초대 링크</C.ModalTitle>
+            <C.ModalDescription>
+              참여자들이 바로 입장할 수 있도록 초대 URL을 등록해 주세요.
+            </C.ModalDescription>
+            <C.ModalInput
+              type="text"
+              value={discordUrlDraft}
+              onChange={(event) => setDiscordUrlDraft(event.target.value)}
+              placeholder="https://discord.gg/..."
+              disabled={isSavingDiscord}
+              autoFocus
+            />
+            {discordModalError && (
+              <C.ModalError>{discordModalError}</C.ModalError>
+            )}
+            <C.ModalPrimaryButton type="submit" disabled={isSavingDiscord}>
+              {isSavingDiscord ? "저장 중..." : "저장하기"}
+            </C.ModalPrimaryButton>
+            <C.ModalSecondaryButton
+              type="button"
+              onClick={closeDiscordModal}
+              disabled={isSavingDiscord}
+            >
+              취소
+            </C.ModalSecondaryButton>
+          </C.Modal>
+        </C.ModalOverlay>
+      )}
     </C.Container>
   );
 };

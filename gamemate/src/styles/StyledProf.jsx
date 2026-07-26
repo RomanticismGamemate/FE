@@ -68,6 +68,15 @@ export const EditIcon = styled.img`
   height: 22px;
 `;
 
+export const ProfileMeta = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+`;
+
 export const Name = styled.div`
   color: #000;
   font-family: Pretendard;
@@ -77,6 +86,22 @@ export const Name = styled.div`
   line-height: normal;
   letter-spacing: -0.3px;
   cursor: pointer;
+`;
+
+export const LogoutButton = styled.button`
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #697077;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.24px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 `;
 
 export const Chat = styled.div`
@@ -160,22 +185,23 @@ export const LBtn = styled.button`
 export const Body = styled.div`
   position: fixed;
   top: 202px;
-  bottom: 0;
+  bottom: 110px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   max-width: 402px;
-  padding-bottom: 125px;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-gutter: stable;
   box-sizing: border-box;
+  transition: --scrollbar-thumb-alpha 0.45s ease;
+  --scrollbar-thumb-alpha: ${({ $scrolling }) => ($scrolling ? 0.22 : 0)};
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+  scrollbar-color: rgba(0, 0, 0, var(--scrollbar-thumb-alpha)) transparent;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -186,12 +212,17 @@ export const Body = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.22);
+    background: rgba(0, 0, 0, var(--scrollbar-thumb-alpha));
     border-radius: 999px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.32);
+    background: rgba(
+      0,
+      0,
+      0,
+      ${({ $scrolling }) => ($scrolling ? 0.32 : 0)}
+    );
   }
 `;
 

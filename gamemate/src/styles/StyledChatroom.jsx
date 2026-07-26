@@ -189,9 +189,11 @@ export const Content = styled.div`
 
   box-sizing: border-box;
 
+  transition: --scrollbar-thumb-alpha 0.45s ease;
+  --scrollbar-thumb-alpha: ${({ $isScrolling }) => ($isScrolling ? 0.18 : 0)};
+
   scrollbar-width: thin;
-  scrollbar-color: ${({ $isScrolling }) =>
-      $isScrolling ? "rgba(0, 0, 0, 0.22) transparent" : "transparent transparent"};
+  scrollbar-color: rgba(0, 0, 0, var(--scrollbar-thumb-alpha)) transparent;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -202,8 +204,7 @@ export const Content = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ $isScrolling }) =>
-      $isScrolling ? "rgba(0, 0, 0, 0.18)" : "transparent"};
+    background: rgba(0, 0, 0, var(--scrollbar-thumb-alpha));
     border-radius: 999px;
   }
 `;
@@ -475,7 +476,131 @@ export const NSelect = styled.div`
   align-items: center;
 `;
 
-export const NBtn = styled.div`
+export const NBtn = styled.button`
   width: 34px;
   height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: ${({ $disabled }) => ($disabled ? "default" : "pointer")};
+  opacity: ${({ $disabled }) => ($disabled ? 0.35 : 1)};
+  pointer-events: ${({ $disabled }) => ($disabled ? "none" : "auto")};
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+`;
+
+export const Modal = styled.div`
+  width: calc(100% - 56px);
+  max-width: 335px;
+  padding: 36px 24px 24px;
+  border-radius: 34px;
+  background: #fffcf4;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  font-family: Pretendard;
+`;
+
+export const ModalTitle = styled.div`
+  color: #21272a;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 140%;
+  text-align: center;
+`;
+
+export const ModalDescription = styled.div`
+  margin-top: 10px;
+  color: #697077;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 150%;
+  text-align: center;
+  word-break: keep-all;
+`;
+
+export const ModalInput = styled.input`
+  margin-top: 22px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #ffe49a;
+  }
+
+  &::placeholder {
+    color: #697077;
+  }
+`;
+
+export const ModalError = styled.p`
+  margin: 8px 0 0;
+  color: #d93025;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 140%;
+`;
+
+export const ModalPrimaryButton = styled.button`
+  width: 100%;
+  height: 54px;
+  margin-top: 20px;
+  border: 1px solid #ffe49a;
+  border-radius: 10px;
+  background: #ffe49a;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+`;
+
+export const ModalSecondaryButton = styled.button`
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  border: 1px solid #ffe49a;
+  border-radius: 10px;
+  background: #fff;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 `;

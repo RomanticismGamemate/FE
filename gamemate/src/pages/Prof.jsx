@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearAuthData } from "../api/ApiClient";
 import { getMyRooms } from "../api/ProfApi";
 import { deleteRoom, leaveRoom } from "../api/RoomApi";
-import Navbar from "../components/Navbar";
 import * as P from "../styles/StyledProf";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
+import { useAutoHideScrollbar } from "../utils/useAutoHideScrollbar";
 
 const getStoredUser = () => {
   try {
@@ -46,20 +47,28 @@ const copyText = async (text) => {
   document.body.removeChild(textArea);
 };
 
-const Prof = () => {
+const Prof = ({ isActive = true }) => {
   const navigate = useNavigate();
   const goList = () => navigate("/chat");
   const goProfileUpdate = () => navigate("/profile/update");
   const goDetail = (room) =>
     navigate(`/roomdetail/${room.id}`, { state: { roomId: room.id } });
+  const handleLogout = () => {
+    clearAuthData();
+    navigate("/", { replace: true });
+  };
   const [selected, setSelected] = useState("participating");
   const [rooms, setRooms] = useState([]);
   const [message, setMessage] = useState("");
   const [modal, setModal] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const user = getStoredUser();
+  const { isScrolling, onScroll } = useAutoHideScrollbar();
 
+  // 탭이 보일 때만 fetch (TabShell keep-alive + 활성 시 갱신)
   useEffect(() => {
+    if (!isActive) return;
+
     const loadMyRooms = async () => {
       try {
         setMessage("");
@@ -76,7 +85,7 @@ const Prof = () => {
     };
 
     loadMyRooms();
-  }, []);
+  }, [isActive]);
 
   const participatingRooms = useMemo(
     () => rooms.filter((room) => (room.status || "open") === "open"),
@@ -183,9 +192,14 @@ const Prof = () => {
               alt="edit"
             />
           </P.Img>
-          <P.Name onClick={goProfileUpdate}>
-            {user?.nickname || "프로필"}
-          </P.Name>
+          <P.ProfileMeta>
+            <P.Name onClick={goProfileUpdate}>
+              {user?.nickname || "프로필"}
+            </P.Name>
+            <P.LogoutButton type="button" onClick={handleLogout}>
+              로그아웃
+            </P.LogoutButton>
+          </P.ProfileMeta>
         </P.Profile>
         <P.Chat>
           {totalUnreadCount > 0 && (
@@ -221,7 +235,7 @@ const Prof = () => {
         </P.CList>
       </P.Category>
 
-      <P.Body>
+      <P.Body $scrolling={isScrolling} onScroll={onScroll}>
         <P.List>
           {message && <P.Message>{message}</P.Message>}
 
@@ -310,8 +324,6 @@ const Prof = () => {
           </P.Modal>
         </P.ModalOverlay>
       )}
-
-      <Navbar />
     </P.Container>
   );
 };

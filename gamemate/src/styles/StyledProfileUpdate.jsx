@@ -62,7 +62,7 @@ export const Body = styled.div`
   gap: 20px;
 `;
 
-export const ImgButton = styled.button`
+export const ImgPreview = styled.div`
   position: relative;
   width: 86px;
   height: 86px;
@@ -73,7 +73,6 @@ export const ImgButton = styled.button`
   display: flex;
   justify-content: center;
   padding: 0;
-  cursor: pointer;
 
   img#person {
     width: 100%;
@@ -83,14 +82,8 @@ export const ImgButton = styled.button`
   }
 `;
 
-export const EditIcon = styled.img`
-  position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 26px;
-  height: 26px;
-`;
-
+// MVP: 닉네임이 곧 아이디라 수정 불가 → ProfileUpdate에서 닉네임 UI를 가려 둠.
+// 닉네임 UI 복구 시 아래 TitleInput / WarningText를 다시 사용합니다.
 export const TitleInput = styled.div`
   position: relative;
   display: flex;

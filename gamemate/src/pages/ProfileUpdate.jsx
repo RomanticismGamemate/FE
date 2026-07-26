@@ -24,11 +24,11 @@ const saveStoredUser = (user) => {
 const ProfileUpdate = () => {
   const navigate = useNavigate();
   const storedUser = getStoredUser();
-  const [user, setUser] = useState(storedUser);
+  // MVP: 닉네임 UI 숨김으로 현재 미사용. 닉네임 UI 복구 시 다시 사용.
+  // const [user, setUser] = useState(storedUser);
   const [selectedAvatar, setSelectedAvatar] = useState(
     normalizeProfileAvatarId(storedUser?.profile_avatar),
   );
-  const [isAvatarListOpen, setIsAvatarListOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -38,7 +38,7 @@ const ProfileUpdate = () => {
     const loadMyInfo = async () => {
       try {
         const myInfo = await getMyInfo();
-        setUser(myInfo);
+        // setUser(myInfo); // MVP: 닉네임 UI 숨김으로 현재 미사용
         setSelectedAvatar(normalizeProfileAvatarId(myInfo.profile_avatar));
         saveStoredUser(myInfo);
       } catch (error) {
@@ -83,45 +83,38 @@ const ProfileUpdate = () => {
       </U.Header>
 
       <U.Body as="form" onSubmit={handleSubmit}>
-        <U.ImgButton
-          type="button"
-          onClick={() => setIsAvatarListOpen((prev) => !prev)}
-          aria-expanded={isAvatarListOpen}
-        >
+        <U.ImgPreview>
           <img
             id="person"
             src={getProfileAvatarSrc(selectedAvatar)}
             alt="profile avatar"
           />
-          <U.EditIcon
-            src={`${process.env.PUBLIC_URL}/images/pencil.svg`}
-            alt="edit"
-          />
-        </U.ImgButton>
+        </U.ImgPreview>
 
-        {isAvatarListOpen && (
-          <U.AvatarPanel>
-            {PROFILE_AVATAR_IDS.map((avatarId) => (
-              <U.AvatarOption
-                key={avatarId}
-                type="button"
-                $selected={selectedAvatar === avatarId}
-                onClick={() => setSelectedAvatar(avatarId)}
-              >
-                <img
-                  src={getProfileAvatarSrc(avatarId)}
-                  alt={`profile avatar ${Number(avatarId)}`}
-                />
-              </U.AvatarOption>
-            ))}
-          </U.AvatarPanel>
-        )}
+        <U.AvatarPanel>
+          {PROFILE_AVATAR_IDS.map((avatarId) => (
+            <U.AvatarOption
+              key={avatarId}
+              type="button"
+              $selected={selectedAvatar === avatarId}
+              onClick={() => setSelectedAvatar(avatarId)}
+            >
+              <img
+                src={getProfileAvatarSrc(avatarId)}
+                alt={`profile avatar ${Number(avatarId)}`}
+              />
+            </U.AvatarOption>
+          ))}
+        </U.AvatarPanel>
 
-        <U.TitleInput>
-          <p>닉네임</p>
-          <input type="text" value={user?.nickname || ""} disabled readOnly />
-          <U.WarningText>*닉네임은 수정할 수 없습니다.</U.WarningText>
-        </U.TitleInput>
+        {/*
+          MVP에서는 닉네임이 곧 아이디이므로 수정이 불가해 닉네임 관련 UI를 가려 둡니다.
+          <U.TitleInput>
+            <p>닉네임</p>
+            <input type="text" value={user?.nickname || ""} disabled readOnly />
+            <U.WarningText>*닉네임은 수정할 수 없습니다.</U.WarningText>
+          </U.TitleInput>
+        */}
 
         {message && <U.Message>{message}</U.Message>}
 

@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { getGames } from "../api/GameApi";
 import { getRooms } from "../api/HomeApi";
 import { getMyRooms } from "../api/ChatRoomApi";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
+import { useAutoHideScrollbar } from "../utils/useAutoHideScrollbar";
 import * as H from "../styles/StyledHome";
 
 const HIDDEN_GAME_SLUGS = new Set(["wss-test"]);
 
-const Home = () => {
+const Home = ({ isActive = true }) => {
   const navigate = useNavigate();
   const goList = () => navigate("/chat");
   const goRoomDetail = (room) =>
@@ -27,13 +27,17 @@ const Home = () => {
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
   const [hasCategoryOverflow, setHasCategoryOverflow] = useState(false);
   const gameListRef = useRef(null);
+  const { isScrolling, onScroll } = useAutoHideScrollbar();
 
   const filterGames = useMemo(
     () => games.filter((gameItem) => !HIDDEN_GAME_SLUGS.has(gameItem.slug)),
     [games],
   );
 
+  // 탭이 보일 때만 fetch (TabShell keep-alive + 활성 시 갱신)
   useEffect(() => {
+    if (!isActive) return;
+
     const loadGames = async () => {
       try {
         const gameList = await getGames();
@@ -44,9 +48,11 @@ const Home = () => {
     };
 
     loadGames();
-  }, []);
+  }, [isActive]);
 
   useEffect(() => {
+    if (!isActive) return;
+
     const loadUnreadCount = async () => {
       try {
         const myRooms = await getMyRooms();
@@ -61,9 +67,11 @@ const Home = () => {
     };
 
     loadUnreadCount();
-  }, []);
+  }, [isActive]);
 
   useEffect(() => {
+    if (!isActive) return;
+
     const loadRooms = async () => {
       try {
         setMessage("");
@@ -81,7 +89,7 @@ const Home = () => {
     };
 
     loadRooms();
-  }, [selected]);
+  }, [selected, isActive]);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -195,7 +203,11 @@ const Home = () => {
         )}
       </H.Category>
 
-      <H.Body $categoryExpanded={isCategoryExpanded && hasCategoryOverflow}>
+      <H.Body
+        $categoryExpanded={isCategoryExpanded && hasCategoryOverflow}
+        $scrolling={isScrolling}
+        onScroll={onScroll}
+      >
         <H.List>
           {message && <H.Message>{message}</H.Message>}
 
@@ -263,8 +275,6 @@ const Home = () => {
           <div>방 만들기</div>
         </H.Make>
       </H.Body>
-
-      <Navbar />
     </H.Container>
   );
 };
