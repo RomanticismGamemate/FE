@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearAuthData } from "../api/ApiClient";
 import { getMyRooms } from "../api/ProfApi";
 import { deleteRoom, leaveRoom } from "../api/RoomApi";
 import * as P from "../styles/StyledProf";
@@ -51,6 +52,10 @@ const Prof = ({ isActive = true }) => {
   const goProfileUpdate = () => navigate("/profile/update");
   const goDetail = (room) =>
     navigate(`/roomdetail/${room.id}`, { state: { roomId: room.id } });
+  const handleLogout = () => {
+    clearAuthData();
+    navigate("/", { replace: true });
+  };
   const [selected, setSelected] = useState("participating");
   const [rooms, setRooms] = useState([]);
   const [message, setMessage] = useState("");
@@ -185,9 +190,14 @@ const Prof = ({ isActive = true }) => {
               alt="edit"
             />
           </P.Img>
-          <P.Name onClick={goProfileUpdate}>
-            {user?.nickname || "프로필"}
-          </P.Name>
+          <P.ProfileMeta>
+            <P.Name onClick={goProfileUpdate}>
+              {user?.nickname || "프로필"}
+            </P.Name>
+            <P.LogoutButton type="button" onClick={handleLogout}>
+              로그아웃
+            </P.LogoutButton>
+          </P.ProfileMeta>
         </P.Profile>
         <P.Chat>
           {totalUnreadCount > 0 && (
