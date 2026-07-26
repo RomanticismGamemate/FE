@@ -185,12 +185,12 @@ export const LBtn = styled.button`
 export const Body = styled.div`
   position: fixed;
   top: 202px;
-  bottom: 0;
+  bottom: 110px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   max-width: 402px;
-  padding-bottom: 125px;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
