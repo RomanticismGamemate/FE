@@ -292,6 +292,17 @@ const Chatroom = () => {
           updatedRoom?.discord_invite_url ?? discordUrlDraft.trim(),
       }));
       setIsDiscordModalOpen(false);
+
+      try {
+        const messageData = await getRoomMessages({ roomId });
+        setMessages(Array.isArray(messageData) ? messageData : []);
+        isNearBottomRef.current = true;
+        setShowScrollToBottom(false);
+      } catch {
+        setErrorMessage(
+          "디스코드 링크는 저장됐지만, 채팅 메시지를 새로고침하지 못했습니다.",
+        );
+      }
     } catch (error) {
       setDiscordModalError(
         error.message || "디스코드 링크를 저장하지 못했습니다.",
