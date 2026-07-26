@@ -196,11 +196,13 @@ export const Body = styled.div`
   align-items: stretch;
   overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-gutter: stable;
   box-sizing: border-box;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+  scrollbar-color: ${({ $scrolling }) =>
+    $scrolling
+      ? "rgba(0, 0, 0, 0.28) transparent"
+      : "transparent transparent"};
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -211,12 +213,14 @@ export const Body = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.22);
+    background: ${({ $scrolling }) =>
+      $scrolling ? "rgba(0, 0, 0, 0.22)" : "transparent"};
     border-radius: 999px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.32);
+    background: ${({ $scrolling }) =>
+      $scrolling ? "rgba(0, 0, 0, 0.32)" : "transparent"};
   }
 `;
 

@@ -7,6 +7,7 @@ import * as P from "../styles/StyledProf";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
+import { useAutoHideScrollbar } from "../utils/useAutoHideScrollbar";
 
 const getStoredUser = () => {
   try {
@@ -62,6 +63,7 @@ const Prof = ({ isActive = true }) => {
   const [modal, setModal] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const user = getStoredUser();
+  const { isScrolling, onScroll } = useAutoHideScrollbar();
 
   // 탭이 보일 때만 fetch (TabShell keep-alive + 활성 시 갱신)
   useEffect(() => {
@@ -233,7 +235,7 @@ const Prof = ({ isActive = true }) => {
         </P.CList>
       </P.Category>
 
-      <P.Body>
+      <P.Body $scrolling={isScrolling} onScroll={onScroll}>
         <P.List>
           {message && <P.Message>{message}</P.Message>}
 
