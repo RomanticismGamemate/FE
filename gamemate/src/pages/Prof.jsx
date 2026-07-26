@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyRooms } from "../api/ProfApi";
 import { deleteRoom, leaveRoom } from "../api/RoomApi";
-import Navbar from "../components/Navbar";
 import * as P from "../styles/StyledProf";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
@@ -46,7 +45,7 @@ const copyText = async (text) => {
   document.body.removeChild(textArea);
 };
 
-const Prof = () => {
+const Prof = ({ isActive = true }) => {
   const navigate = useNavigate();
   const goList = () => navigate("/chat");
   const goProfileUpdate = () => navigate("/profile/update");
@@ -59,7 +58,10 @@ const Prof = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const user = getStoredUser();
 
+  // 탭이 보일 때만 fetch (TabShell keep-alive + 활성 시 갱신)
   useEffect(() => {
+    if (!isActive) return;
+
     const loadMyRooms = async () => {
       try {
         setMessage("");
@@ -76,7 +78,7 @@ const Prof = () => {
     };
 
     loadMyRooms();
-  }, []);
+  }, [isActive]);
 
   const participatingRooms = useMemo(
     () => rooms.filter((room) => (room.status || "open") === "open"),
@@ -310,8 +312,6 @@ const Prof = () => {
           </P.Modal>
         </P.ModalOverlay>
       )}
-
-      <Navbar />
     </P.Container>
   );
 };
