@@ -168,21 +168,45 @@ export const Body = styled.div`
   padding-bottom: 125px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+  align-items: stretch;
+  overflow-y: scroll;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   box-sizing: border-box;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.22);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.32);
+  }
 `;
+
 export const List = styled.div`
-display: flex;
+  display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 13px 25px;
+  width: 100%;
+  padding: 13px 12px 13px 25px;
   flex: 0 0 auto;
+  box-sizing: border-box;
 `;
 
 export const Component = styled.div`
-width: 343px;
+  width: 100%;
   height: 126px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
@@ -191,7 +215,9 @@ width: 343px;
   display: flex;
   flex-direction: row;
   gap: 13px;
+  box-sizing: border-box;
 `;
+
 export const ProfileImg = styled.div`
   width: 35px;
   height: 35px;
@@ -213,19 +239,22 @@ export const ProfileImg = styled.div`
 `;
 
 export const Content = styled.div`
-width: 265px;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
+
 export const Text = styled.div`
-gap: 6px;
+  gap: 6px;
   display: flex;
   flex-direction: column;
   align-items: start;
 `;
+
 export const Up = styled.div`
-display: flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
@@ -262,6 +291,7 @@ display: flex;
     line-height: 140%;
   }
 `;
+
 export const Down = styled.div`
   color: #697077;
   font-family: Pretendard;
@@ -270,6 +300,7 @@ export const Down = styled.div`
   font-weight: 400;
   line-height: 140%; /* 16.8px */
 `;
+
 export const ButtonLeft = styled.div`
   display: flex;
   width: 50%;
@@ -278,10 +309,11 @@ export const ButtonLeft = styled.div`
   justify-content: center;
   border-radius: 10px;
   background: #fff0c7;
-  border: 1px solid #FFE49A;
+  border: 1px solid #ffe49a;
   color: #000;
   cursor: pointer;
 `;
+
 export const ButtonRight = styled.div`
   display: flex;
   width: 50%;
@@ -290,12 +322,13 @@ export const ButtonRight = styled.div`
   justify-content: center;
   border-radius: 10px;
   background: #ffffff;
-  border: 1px solid #FFE49A;
+  border: 1px solid #ffe49a;
   color: #000;
   cursor: pointer;
 `;
-export const Button = styled.div`width: 265px;
-width: 265px;
+
+export const Button = styled.div`
+  width: 100%;
   height: 33px;
   font-family: Pretendard;
   font-size: 12px;
@@ -306,7 +339,8 @@ width: 265px;
   flex-direction: row;
   gap: 10px;
   align-items: center;
-  justify-content: center;`;
+  justify-content: center;
+`;
 
 export const NBtn = styled.div`
   width: 34px;
@@ -314,7 +348,7 @@ export const NBtn = styled.div`
 `;
 
 export const Message = styled.p`
-  width: 343px;
+  width: 100%;
   color: #d93025;
   margin: 0;
   font-family: Pretendard;
