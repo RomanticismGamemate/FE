@@ -189,9 +189,11 @@ export const Content = styled.div`
 
   box-sizing: border-box;
 
+  transition: --scrollbar-thumb-alpha 0.45s ease;
+  --scrollbar-thumb-alpha: ${({ $isScrolling }) => ($isScrolling ? 0.18 : 0)};
+
   scrollbar-width: thin;
-  scrollbar-color: ${({ $isScrolling }) =>
-      $isScrolling ? "rgba(0, 0, 0, 0.22) transparent" : "transparent transparent"};
+  scrollbar-color: rgba(0, 0, 0, var(--scrollbar-thumb-alpha)) transparent;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -202,8 +204,7 @@ export const Content = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ $isScrolling }) =>
-      $isScrolling ? "rgba(0, 0, 0, 0.18)" : "transparent"};
+    background: rgba(0, 0, 0, var(--scrollbar-thumb-alpha));
     border-radius: 999px;
   }
 `;
