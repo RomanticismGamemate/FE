@@ -4,7 +4,7 @@ export const Container = styled.div`
   position: relative;
   margin: 0 auto;
   margin-top: 0px;
-  min-height: 100dvh;
+  height: 100dvh;
   padding: 0; /* 불필요한 패딩 제거 */
   box-sizing: border-box; /* 패딩이 width에 포함되도록 설정 */
   display: flex;
@@ -13,7 +13,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: 402px;
   flex-shrink: 0;
-  padding-bottom: 30px;
+  overflow: hidden;
 `;
 
 export const Header = styled.div`
@@ -32,14 +32,38 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.div`
-  gap: 37px;
+  gap: 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 0;
+  flex: 1;
 
-  img {
+  #back {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+`;
+
+export const RoomImg = styled.div`
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: #d9d9d9;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
   }
 `;
 
@@ -48,6 +72,7 @@ export const CTitle = styled.div`
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
   cursor: pointer;
 
   #title {
@@ -58,6 +83,9 @@ export const CTitle = styled.div`
     font-weight: 500;
     line-height: normal;
     letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #members {
@@ -122,10 +150,8 @@ export const Body = styled.div`
 
 export const Board = styled.div`
   width: 343px;
-
-  height: calc(100dvh - 174px);
-  min-height: 400px;
-  max-height: 690px;
+  flex: 1;
+  min-height: 0;
 
   border-radius: 30px;
   background: #fffcf4;
@@ -137,6 +163,15 @@ export const Board = styled.div`
 
   box-sizing: border-box;
   overflow: hidden;
+`;
+
+export const MessagePane = styled.div`
+  position: relative;
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Content = styled.div`
@@ -154,10 +189,57 @@ export const Content = styled.div`
 
   box-sizing: border-box;
 
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: ${({ $isScrolling }) =>
+      $isScrolling ? "rgba(0, 0, 0, 0.22) transparent" : "transparent transparent"};
 
   &::-webkit-scrollbar {
-    display: none;
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ $isScrolling }) =>
+      $isScrolling ? "rgba(0, 0, 0, 0.18)" : "transparent"};
+    border-radius: 999px;
+  }
+`;
+
+export const ScrollToBottom = styled.button`
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  border: 1px solid #ffe49a;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: #fffaf0;
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.96);
   }
 `;
 
@@ -165,7 +247,8 @@ export const Alert = styled.div`
   width: 100%;
 
   display: flex;
-  margin-bottom: 36px;
+  margin-top: 18px;
+  margin-bottom: 18px;
 
   align-items: center;
   justify-content: center;
@@ -289,8 +372,9 @@ export const Message = styled.textarea`
   flex: 1;
   min-width: 0;
 
+  min-height: 41px;
   height: 41px;
-  max-height: 100px;
+  max-height: 122px;
 
   padding: 10px 16px;
 
@@ -306,8 +390,15 @@ export const Message = styled.textarea`
 
   outline: none;
   resize: none;
+  overflow-y: auto;
 
   box-sizing: border-box;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &::placeholder {
     color: #a4a4a4;

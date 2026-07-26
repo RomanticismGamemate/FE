@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getGames } from "../api/GameApi";
 import { createRoom } from "../api/MakeApi";
+import { postRoomMessage } from "../api/ChatApi";
 import * as M from "../styles/StyledMake";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { navigateBackOrHome } from "../utils/navigation";
+
+const HIDDEN_GAME_SLUGS = new Set(["wss-test"]);
 
 const Make = () => {
   const navigate = useNavigate();
@@ -20,13 +24,20 @@ const Make = () => {
 
   const goBack = () => navigateBackOrHome(navigate);
 
+  const filterGames = useMemo(
+    () => games.filter((gameItem) => !HIDDEN_GAME_SLUGS.has(gameItem.slug)),
+    [games],
+  );
+
   useEffect(() => {
     const loadGames = async () => {
       try {
         const gameList = await getGames();
-        setGames(gameList);
+        setGames(Array.isArray(gameList) ? gameList : []);
       } catch (error) {
-        setMessage(error.message || "게임 목록을 불러오는 중 문제가 발생했습니다.");
+        setMessage(
+          error.message || "게임 목록을 불러오는 중 문제가 발생했습니다.",
+        );
       }
     };
 
@@ -39,19 +50,52 @@ const Make = () => {
     setIsLoading(true);
 
     try {
-      await createRoom({
+      const createdRoom = await createRoom({
         title,
         description,
         game,
         playTimeSlot,
         maxMembers,
       });
+
+      const roomTitle = createdRoom?.title || title.trim();
+      const createdRoomId = createdRoom?.id;
+
+      if (createdRoomId) {
+        try {
+          await postRoomMessage({
+            roomId: createdRoomId,
+            content: `${roomTitle}방이 생성되었습니다.`,
+            messageType: "system",
+          });
+        } catch (error) {
+          console.error("방 생성 안내 메시지를 보내지 못했습니다.", error);
+        }
+      }
+
       navigate("/home");
     } catch (error) {
       setMessage(error.message || "방 생성 중 문제가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const renderGameLabel = (gameItem) => {
+    if (gameItem.slug === "etc") {
+      return "ETC";
+    }
+
+    if (hasGameLogo(gameItem.slug)) {
+      return (
+        <img
+          src={getGameLogoSrc(gameItem.slug)}
+          alt={gameItem.name_ko || gameItem.short_name || gameItem.name}
+        />
+      );
+    }
+
+    return gameItem.short_name || gameItem.name_ko || gameItem.name;
   };
 
   return (
@@ -71,16 +115,27 @@ const Make = () => {
       <M.Body as="form" onSubmit={handleSubmit}>
         <M.GameSelect>
           <p>게임 선택</p>
-          <select value={game} onChange={(event) => setGame(event.target.value)}>
-            <option value="" disabled>
-              게임을 선택해주세요.
-            </option>
-            {games.map((gameItem) => (
-              <option key={gameItem.id} value={gameItem.slug}>
-                {gameItem.name_ko || gameItem.short_name || gameItem.name}
-              </option>
-            ))}
-          </select>
+          <M.GameList>
+            {filterGames.map((gameItem) => {
+              const isIcon = hasGameLogo(gameItem.slug);
+
+              return (
+                <M.GameBtn
+                  key={gameItem.id}
+                  type="button"
+                  $icon={isIcon}
+                  $selected={game === gameItem.slug}
+                  onClick={() => setGame(gameItem.slug)}
+                  aria-label={
+                    gameItem.name_ko || gameItem.short_name || gameItem.name
+                  }
+                  aria-pressed={game === gameItem.slug}
+                >
+                  {renderGameLabel(gameItem)}
+                </M.GameBtn>
+              );
+            })}
+          </M.GameList>
         </M.GameSelect>
 
         <M.TitleInput>

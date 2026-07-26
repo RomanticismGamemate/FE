@@ -144,6 +144,43 @@ export const Field = styled.div`
   }
 `;
 
+export const PasswordField = styled.div`
+  position: relative;
+  width: 100%;
+
+  input {
+    padding-right: 48px;
+  }
+`;
+
+export const PasswordToggle = styled.button`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  img {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f4c430;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+`;
+
 export const HelperText = styled.p`
   margin: -4px 0 0;
   color: #697077;

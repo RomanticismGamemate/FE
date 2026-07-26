@@ -92,9 +92,9 @@ export const Category = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 393px;
-  min-height: 65px;
-  max-height: ${({ $expanded }) => ($expanded ? "144px" : "65px")};
-  padding: 18px 25px;
+  min-height: 72px;
+  max-height: ${({ $expanded }) => ($expanded ? "156px" : "72px")};
+  padding: 16px 20px;
   z-index: 999;
   box-sizing: border-box;
   background: #fff0c7;
@@ -106,21 +106,22 @@ export const CList = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: ${({ $expanded }) => ($expanded ? "wrap" : "nowrap")};
-  gap: 10px;
-  width: calc(100% - 34px);
+  gap: 3px;
+  width: ${({ $hasToggle }) => ($hasToggle ? "calc(100% - 46px)" : "100%")};
   align-items: center;
+  justify-content: space-between;
   white-space: nowrap;
   overflow: ${({ $expanded }) => ($expanded ? "auto" : "hidden")};
-  max-height: ${({ $expanded }) => ($expanded ? "108px" : "29px")};
-  padding-right: 2px;
+  max-height: ${({ $expanded }) => ($expanded ? "124px" : "40px")};
   box-sizing: border-box;
 `;
 
 export const LBtn = styled.button`
   display: flex;
-  flex: 0 0 auto;
-  height: 28px;
-  padding: 10px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: ${({ $icon }) => ($icon ? "2px" : "0")};
   justify-content: center;
   align-items: center;
 
@@ -130,14 +131,22 @@ export const LBtn = styled.button`
 
   color: #000;
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 11px;
   font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  letter-spacing: -0.3px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.22px;
 
   cursor: pointer;
   transition: background-color 0.2s ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+  }
 `;
 
 export const Plus = styled.div`
@@ -148,10 +157,10 @@ export const Plus = styled.div`
 
 export const CategoryToggle = styled.button`
   position: absolute;
-  top: 18px;
-  right: 25px;
-  width: 28px;
-  height: 28px;
+  top: 16px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 10px;
   background: #fffcf4;
@@ -178,7 +187,7 @@ export const CategoryToggle = styled.button`
 
 export const Body = styled.div`
   position: fixed;
-  top: ${({ $categoryExpanded }) => ($categoryExpanded ? "281px" : "202px")};
+  top: ${({ $categoryExpanded }) => ($categoryExpanded ? "293px" : "209px")};
   bottom: 110px;
   left: 50%;
   transform: translateX(-50%);
@@ -187,23 +196,46 @@ export const Body = styled.div`
   padding-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+  align-items: stretch;
+  overflow-y: scroll;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   box-sizing: border-box;
   transition: top 0.2s ease;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.22);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.32);
+  }
 `;
 
 export const List = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 13px 25px;
+  width: 100%;
+  padding: 13px 12px 13px 25px;
   flex: 0 0 auto;
+  box-sizing: border-box;
 `;
 
 export const Component = styled.div`
-  width: 343px;
+  width: 100%;
   height: 126px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
@@ -212,17 +244,32 @@ export const Component = styled.div`
   display: flex;
   flex-direction: row;
   gap: 13px;
+  box-sizing: border-box;
 `;
 
 export const Img = styled.div`
   width: 35px;
   height: 35px;
+  flex-shrink: 0;
   background: #d9d9d9;
   border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
+  }
 `;
 
 export const Content = styled.div`
-  width: 265px;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -273,7 +320,7 @@ export const Down = styled.div`
 export const Button = styled.button`
   outline: none;
   border: transparent;
-  width: 265px;
+  width: 100%;
   height: 33px;
   border-radius: 10px;
   background: #fff0c7;
@@ -289,7 +336,7 @@ export const Button = styled.button`
 `;
 
 export const Message = styled.p`
-  width: 343px;
+  width: 100%;
   color: #d93025;
   margin: 0;
   font-family: Pretendard;
@@ -301,20 +348,20 @@ export const Message = styled.p`
 `;
 
 export const Make = styled.div`
-  width: 343px;
+  width: calc(100% - 37px);
   height: 42px;
   min-height: 42px;
   flex: 0 0 42px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
   background: #ffe49a;
-  margin-top: 30px;
-  margin-bottom: 4px;
+  margin: 30px 12px 4px 25px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-sizing: border-box;
 
   img {
     width: 15px;

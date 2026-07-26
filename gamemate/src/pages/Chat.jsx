@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as C from "../styles/StyledChat";
 import { getMyRooms, getRoomMessages } from "../api/ChatRoomApi";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 import { navigateBackOrHome } from "../utils/navigation";
 
 const getLatestMessage = (messages) => {
@@ -202,11 +204,20 @@ const Chat = () => {
               return (
                 <C.Component key={room.id} onClick={() => goRoom(room.id)}>
                   <C.Content>
-                    <C.Img style={{ background: room.game?.color || "#d9d9d9" }}>
-                      {room.game?.icon && (
+                    <C.Img
+                      style={{
+                        background: getVariedGameColor(
+                          room.game?.color,
+                          room.id,
+                        ),
+                      }}
+                    >
+                      {hasGameLogo(room.game?.slug) && (
                         <img
-                          src={room.game.icon}
-                          alt={room.game?.name_ko || room.game?.name || "게임"}
+                          src={getGameLogoSrc(room.game.slug)}
+                          alt={
+                            room.game?.name_ko || room.game?.name || "게임"
+                          }
                         />
                       )}
                     </C.Img>

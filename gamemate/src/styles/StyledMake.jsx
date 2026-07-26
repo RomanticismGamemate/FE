@@ -179,159 +179,212 @@ export const Body = styled.div`
   transform: translateX(-50%);
   width: 100%;
   max-width: 402px;
-  padding: 35px 0 40px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding: 12px 0 20px;
+  overflow: hidden;
+  overscroll-behavior: none;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap:20px;
-    p{
+  gap: 12px;
+
+  p {
     color: #000;
-    margin-bottom: 9px;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
-}
-
+    margin-bottom: 6px;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
+  }
 `;
+
 export const GameSelect = styled.div`
-display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-select{
-appearance: none;
--webkit-appearance: none;
-padding:20px 48px 20px 20px;
-width: 343px;
-background: #ffffff;
-background-image: url("/images/chevron-down.svg");
-background-repeat: no-repeat;
-background-position: right 18px center;
-background-size: 16px 16px;
-border: 1px solid #D9D9D9;
-border-radius: 10px;
-color: #A2A2A2;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
-}
-
+  width: 343px;
+  flex-shrink: 0;
 `;
+
+export const GameList = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 3px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const GameBtn = styled.button`
+  display: flex;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: ${({ $icon }) => ($icon ? "2px" : "0")};
+  justify-content: center;
+  align-items: center;
+
+  border: ${({ $selected }) =>
+    $selected ? "1px solid #f4c430" : "1px solid transparent"};
+  border-radius: 10px;
+  background: ${({ $selected }) => ($selected ? "#ffe49a" : "#fff")};
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.22px;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+`;
+
 export const TitleInput = styled.div`
-display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-input{
-padding:20px;
-width: 343px;
-    border-radius: 10px;
-background: #ffffff;
-border: 1px solid #D9D9D9;
-color: #A2A2A2;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
-}
-`;
-export const ContentInput = styled.div`
-display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-textarea{
-  resize: none;
-padding:20px;
-width: 343px;
-height: 118px;
-background: #ffffff;
-border: 1px solid #D9D9D9;
-color: #A2A2A2;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
-border-radius: 10px;
+  flex-shrink: 0;
 
-}
-}`;
+  input {
+    padding: 0 16px;
+    width: 343px;
+    height: 48px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #d9d9d9;
+    color: #111;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
+    box-sizing: border-box;
+    outline: none;
+
+    &::placeholder {
+      color: #a2a2a2;
+    }
+  }
+`;
+
+export const ContentInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 343px;
+  flex: 1;
+  min-height: 0;
+
+  textarea {
+    resize: none;
+    padding: 14px 16px;
+    width: 100%;
+    flex: 1;
+    min-height: 72px;
+    background: #ffffff;
+    border: 1px solid #d9d9d9;
+    color: #111;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline: none;
+
+    &::placeholder {
+      color: #a2a2a2;
+    }
+  }
+`;
+
 export const DetailSelect = styled.div`
-display: flex;
-width: 343px;
+  display: flex;
+  width: 343px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 
-#SelectBox {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-}
-select{
-width: 161px;
-appearance: none;
--webkit-appearance: none;
-padding:20px 42px 20px 20px;
-background: #ffffff;
-background-image: url("/images/chevron-down.svg");
-background-repeat: no-repeat;
-background-position: right 16px center;
-background-size: 16px 16px;
-border: 1px solid #D9D9D9;
-color: #A2A2A2;
-font-family: Pretendard;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.3px;
+  #SelectBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  select {
+    width: 161px;
+    height: 48px;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0 42px 0 16px;
+    background: #ffffff;
+    background-image: url("/images/chevron-down.svg");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px 16px;
+    border: 1px solid #d9d9d9;
+    color: #111;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
     border-radius: 10px;
-
-}
+    box-sizing: border-box;
+  }
 `;
+
 export const Button = styled.button`
-width: 343px;
-  height: 55px;
-  min-height: 55px;
-  flex: 0 0 55px;
+  width: 343px;
+  height: 50px;
+  min-height: 50px;
+  flex: 0 0 50px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
   background: #ffe49a;
-  margin-top: 30px;
+  margin-top: 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-      cursor: pointer;
-color: #000;
-font-family: Pretendard;
-font-size: 17px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-letter-spacing: -0.34px;
+  cursor: pointer;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.34px;
 
-&:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 
 export const Message = styled.p`
@@ -344,4 +397,5 @@ export const Message = styled.p`
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: -0.28px;
+  flex-shrink: 0;
 `;

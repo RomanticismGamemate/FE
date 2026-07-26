@@ -90,32 +90,31 @@ export const Body = styled.div`
   transform: translateX(-50%);
   width: 100%;
   max-width: 402px;
-  padding: 0 0 30px;
+  padding: 0 0 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+  overscroll-behavior: none;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
 `;
 
 export const Board = styled.div`
   width: 343px;
-
-  height: auto;
-  min-height: max(600px, calc(100dvh - 167px));
+  flex: 1;
+  min-height: 0;
+  max-height: 100%;
 
   border-radius: 30px;
   background: #fffcf4;
 
-  padding: 21px 16px 30px;
+  padding: 21px 16px 20px;
 
   display: flex;
   flex-direction: column;
 
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden;
 `;
 
 export const ProfileImg = styled.div`
@@ -124,6 +123,18 @@ export const ProfileImg = styled.div`
   background: #d9d9d9;
   border-radius: 50%;
   flex: 0 0 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+    display: block;
+    border-radius: 50%;
+  }
 `;
 
 export const Content = styled.div`
@@ -132,23 +143,28 @@ export const Content = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 24px;
+  justify-content: flex-start;
+  gap: 18px;
 `;
+
 export const Text = styled.div`
-gap: 6px;
+  gap: 6px;
   display: flex;
   flex-direction: column;
   align-items: start;
 `;
+
 export const Rcontent = styled.div`
   width: 100%;
-  margin-top: 30px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 34px;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 `;
 
 export const TitleContent = styled.div`
@@ -342,7 +358,8 @@ export const Down = styled.div`
 export const Button = styled.button`
   width: 100%;
   height: 55px;
-  margin-top: auto;
+  flex-shrink: 0;
+  margin-top: 8px;
   border-radius: 10px;
   border: 1px solid #ffe49a;
   background: #ffe49a;

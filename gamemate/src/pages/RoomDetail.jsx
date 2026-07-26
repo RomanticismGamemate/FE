@@ -4,6 +4,8 @@ import { applyToRoom } from "../api/ApplyApi";
 import { getRoomDetail, getRoomMembers } from "../api/RoomApi";
 import * as R from "../styles/StyledRoom";
 import { getProfileAvatarSrc } from "../utils/profileAvatar";
+import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
+import { getVariedGameColor } from "../utils/gameColor";
 import { navigateBackOrHome } from "../utils/navigation";
 
 const getCurrentUser = () => {
@@ -96,6 +98,17 @@ const RoomDetail = () => {
 
       const application = await applyToRoom({ roomId });
       setHasApplied(true);
+      setRoom((prevRoom) =>
+        prevRoom
+          ? {
+              ...prevRoom,
+              my_membership_status:
+                application?.status ||
+                prevRoom.my_membership_status ||
+                "pending",
+            }
+          : prevRoom,
+      );
 
       try {
         const memberList = await getRoomMembers(roomId);
@@ -119,6 +132,11 @@ const RoomDetail = () => {
     }
   };
 
+  const goChatroom = () => {
+    if (!roomId) return;
+    navigate(`/chatroom/${roomId}`);
+  };
+
   const gameName = room?.game?.name_ko || room?.game?.name || "게임 미정";
   const ownerName = room?.owner?.nickname || room?.owner?.username || "방장";
   const playTime = room?.play_time_label || "시간대 미정";
@@ -127,6 +145,32 @@ const RoomDetail = () => {
     room?.approved_member_count ?? approvedMembers.length;
   const memberCount = room && `${approvedMemberCount}/${room.max_members}`;
   const shouldShowMembers = !hideMemberList || hasApplied;
+  const isMember = room?.my_membership_status === "approved";
+  const isPending =
+    room?.my_membership_status === "pending" ||
+    (hasApplied &&
+      room?.my_membership_status !== "approved" &&
+      room?.my_membership_status !== "rejected");
+  const gameSlug = room?.game?.slug;
+  const logoSrc = hasGameLogo(gameSlug) ? getGameLogoSrc(gameSlug) : null;
+  const roomImgColor = getVariedGameColor(room?.game?.color, room?.id || roomId);
+
+  const actionLabel = isMember
+    ? "채팅방으로 이동"
+    : isPending
+      ? "승인 대기 중"
+      : isApplying
+        ? "신청 중..."
+        : "신청하기";
+
+  const handleActionClick = () => {
+    if (isMember) {
+      goChatroom();
+      return;
+    }
+
+    handleApply();
+  };
 
   return (
     <R.Container>
@@ -156,9 +200,14 @@ const RoomDetail = () => {
           {room && (
             <R.Content>
               <R.TitleContent>
-                <R.ProfileImg
-                  style={{ background: room.game?.color || "#d9d9d9" }}
-                />
+                <R.ProfileImg style={{ background: roomImgColor }}>
+                  {logoSrc && (
+                    <img
+                      src={logoSrc}
+                      alt={room.game?.name_ko || room.game?.name || "게임"}
+                    />
+                  )}
+                </R.ProfileImg>
 
                 <R.Text>
                   <R.Up>
@@ -213,10 +262,10 @@ const RoomDetail = () => {
 
               <R.Button
                 type="button"
-                onClick={handleApply}
-                disabled={isApplying || hasApplied}
+                onClick={handleActionClick}
+                disabled={isApplying || isPending}
               >
-                {hasApplied ? "참여 중" : isApplying ? "신청 중..." : "신청하기"}
+                {actionLabel}
               </R.Button>
             </R.Content>
           )}
