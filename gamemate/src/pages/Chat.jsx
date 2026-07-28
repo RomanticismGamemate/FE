@@ -5,6 +5,7 @@ import { getMyRooms, getRoomMessages } from "../api/ChatRoomApi";
 import { getGameLogoSrc, hasGameLogo } from "../utils/gameLogos";
 import { getVariedGameColor } from "../utils/gameColor";
 import { navigateBackOrHome } from "../utils/navigation";
+import { formatChatMessagePreview } from "../utils/chatMessage";
 
 const getLatestMessage = (messages) => {
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -196,11 +197,6 @@ const Chat = () => {
             rooms.map((room) => {
               const latestMessage = room.latestMessage;
 
-              const senderName =
-                latestMessage?.sender?.nickname ||
-                latestMessage?.sender?.username ||
-                "알 수 없음";
-
               return (
                 <C.Component key={room.id} onClick={() => goRoom(room.id)}>
                   <C.Content>
@@ -235,7 +231,7 @@ const Chat = () => {
                       <C.Down>
                         <div>
                           {latestMessage
-                            ? `${senderName}: ${latestMessage.content}`
+                            ? formatChatMessagePreview(latestMessage)
                             : "아직 메시지가 없습니다."}
                         </div>
                       </C.Down>
