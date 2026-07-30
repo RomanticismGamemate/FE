@@ -6,27 +6,29 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const isHome = pathname === "/home";
   const isProfile = pathname === "/profile";
 
   return (
-    <N.Nav>
-      <N.Item $selected={isHome} onClick={() => navigate("/home")}>
-        <N.NBtn >
-          <img
-            id="home"
-            src={`${process.env.PUBLIC_URL}/images/home_e.svg`}
-            alt="home"
-          />
+    <N.Nav $isProfile={isProfile}>
+      <N.Item>
+        <N.NBtn
+          type="button"
+          aria-label="홈으로 이동"
+          aria-current={!isProfile ? "page" : undefined}
+          onClick={() => navigate("/home")}
+        >
+          <img src={`${process.env.PUBLIC_URL}/images/home_e.svg`} alt="" />
         </N.NBtn>
       </N.Item>
-      <N.Item $selected={isProfile} onClick={() => navigate("/profile")}>
-        <N.NBtn >
-          <img
-            id="prof"
-            src={`${process.env.PUBLIC_URL}/images/prof_e.svg`}
-            alt="prof"
-          />
+
+      <N.Item>
+        <N.NBtn
+          type="button"
+          aria-label="프로필로 이동"
+          aria-current={isProfile ? "page" : undefined}
+          onClick={() => navigate("/profile")}
+        >
+          <img src={`${process.env.PUBLIC_URL}/images/prof_e.svg`} alt="" />
         </N.NBtn>
       </N.Item>
     </N.Nav>
