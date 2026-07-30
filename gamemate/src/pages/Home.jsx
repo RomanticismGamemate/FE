@@ -208,6 +208,21 @@ const Home = ({ isActive = true }) => {
         $scrolling={isScrolling}
         onScroll={onScroll}
       >
+        <H.Make
+          onClick={() =>
+            navigate("/make", {
+              state: { selectedGame: selected === "all" ? "" : selected },
+            })
+          }
+        >
+          <img
+            id="add"
+            src={`${process.env.PUBLIC_URL}/images/add.svg`}
+            alt="add"
+          />
+          <div>방 만들기</div>
+        </H.Make>
+
         <H.List>
           {message && <H.Message>{message}</H.Message>}
 
@@ -216,10 +231,7 @@ const Home = ({ isActive = true }) => {
             const logoSrc = hasGameLogo(gameSlug)
               ? getGameLogoSrc(gameSlug)
               : null;
-            const avatarColor = getVariedGameColor(
-              room.game?.color,
-              room.id,
-            );
+            const avatarColor = getVariedGameColor(room.game?.color, room.id);
 
             return (
               <H.Component key={room.id} onClick={() => goRoomDetail(room)}>
@@ -259,21 +271,6 @@ const Home = ({ isActive = true }) => {
             );
           })}
         </H.List>
-
-        <H.Make
-          onClick={() =>
-            navigate("/make", {
-              state: { selectedGame: selected === "all" ? "" : selected },
-            })
-          }
-        >
-          <img
-            id="add"
-            src={`${process.env.PUBLIC_URL}/images/add.svg`}
-            alt="add"
-          />
-          <div>방 만들기</div>
-        </H.Make>
       </H.Body>
     </H.Container>
   );
